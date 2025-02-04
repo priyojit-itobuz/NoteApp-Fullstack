@@ -1,7 +1,9 @@
 import nodemailer from "nodemailer";
 import hbs from 'nodemailer-express-handlebars'
 
-export const mailSender = async (token) => {
+export const mailSender = async (email,token) => {
+  
+  console.log("mail",email);
   
     const transporter = nodemailer.createTransport({
       service: "gmail",
@@ -25,7 +27,7 @@ export const mailSender = async (token) => {
   
     const mailConfiguration = {
       from: 'Priyojit Kundu',
-      to: 'priyojit@itobuz.com',
+      to: email,
       subject: 'Email Verification',
       template: 'email',
       context: {

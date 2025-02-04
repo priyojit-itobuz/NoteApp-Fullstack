@@ -1,25 +1,38 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import { yupResolver } from "@hookform/resolvers/yup";
 import { signupUser } from '../validation/userValidation';
 import { useForm } from 'react-hook-form';
+import { toast } from 'react-toastify';
+import axios from 'axios'
+import { CreateContext } from '../context/myContext';
 
 export default function Signup() {
     const { register, handleSubmit, formState: { errors }, reset } = useForm({
         resolver: yupResolver(signupUser),
     });
-    
-    const handleRegistration = async(data,e) => {
-        console.log(data);
-        const resp = await fetch("http://localhost:3000/register",{
-            method:'POST',
-            headers: {
-                'Content-type': 'application/json'
-            },
-            body: JSON.stringify(data),
-        });
-        console.log("resp",resp);
-        e.target.reset();
+
+    const {accessToken } = useContext(CreateContext);
+
+    const handleRegistration = async (data, e) => {
+        try {
+            console.log(data);
+            const res = await axios.post("http://localhost:3000/register", data, {
+                headers: { 'Content-type': 'application/json' },
+            })
+            if(res.data.success) {
+                console.log(res.data.message)
+                toast.success("User Created! Check email for Verification");
+                e.target.reset()
+            }
+        }
+
+        catch (error) {
+            toast.error(error.message)
+        }
     }
+
+    // console.log("yoyo",accessToken);
+    
     return (
         <div>
             <form onSubmit={handleSubmit(handleRegistration)}>

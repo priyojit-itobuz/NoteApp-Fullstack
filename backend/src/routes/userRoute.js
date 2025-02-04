@@ -10,7 +10,7 @@ const route = express.Router();
 route.post("/register",validate(signupUser),register);
 route.post("/login",validate(loginUser),login)
 route.get("/getAccessToken",regenerateAccessToken)
-route.get("/verify",verifyToken)
+route.post("/verify/:token",verifyToken)
 route.post("/logout",isLoggedIn,logout)
 
 

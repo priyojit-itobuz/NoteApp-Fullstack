@@ -1,8 +1,11 @@
-import React, { useState } from 'react'
+import React, { useContext} from 'react'
 import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom'
 import { loginUser } from '../validation/userValidation';
 import { yupResolver } from '@hookform/resolvers/yup';
+import { toast } from 'react-toastify';
+import axios from 'axios';
+import { CreateContext } from '../context/myContext';
 
 export default function Login() {
 
@@ -10,13 +13,35 @@ export default function Login() {
         resolver: yupResolver(loginUser),
     });
     const navigate = useNavigate();
-    const [err,setErr] = useState(false);
+    const { isLoggedIn,LoggedIn,AccessToken,setAccessToken } = useContext(CreateContext);
+    // let accessToken = JSON.parse(localStorage.getItem("accessToken")) || "";
+    // let refreshToken = JSON.parse(localStorage.getItem("refreshToken")) || "";
 
-    const handleSignin = async(data,e) => {
-        console.log(data);
-        e.target.reset();
-        navigate('/')
+    const handleSignin = async(data) => {
+        try {
+            console.log(data);
+            const res = await axios.post("http://localhost:3000/login", data, {
+                headers: { 'Content-type': 'application/json' },
+            })
+            if(res.data.success) {
+                console.log(res.data)
+                console.log(res.data.accessToken);
+                const {accessToken, refreshToken} = res.data;
+                setAccessToken(accessToken);
+                localStorage.setItem("accessToken", AccessToken);
+                console.log("Access token is", AccessToken);
+                toast.success("Login Successfull");
+                LoggedIn();
+                // setaccessLocalStorage();
+                navigate("/")
+            }
+        }
+
+        catch (error) {
+            toast.error("Invalid Credentials")
+        }
     }
+
   return (
     <div>
       <div>

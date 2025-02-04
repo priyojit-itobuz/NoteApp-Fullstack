@@ -26,7 +26,7 @@ export const register = async (req, res) => {
         existingUser.password = hashedPassword;
 
         await existingUser.save();
-        mailSender(token);
+        await mailSender(email,token);
 
         return res.status(200).json({
           success: true,
@@ -56,7 +56,7 @@ export const register = async (req, res) => {
     const token = jwt.sign({ userId }, process.env.SECRET_KEY, {
       expiresIn: "10m",
     });
-    mailSender(token);
+    await mailSender(email,token);
 
     res.status(201).json({
       success: true,

@@ -15,7 +15,7 @@ export const verifyToken = async (req, res) => {
       if (error) {
         console.log(error);
         res.send(
-          '"Email verification failed, possibly the link is invalid or expired"'
+          "Email verification failed, possibly the link is invalid or expired"
         );
         res.status(401).json({ error: "Unauthorized" });
       } else {
@@ -25,13 +25,13 @@ export const verifyToken = async (req, res) => {
         if (findUser) {
           findUser.isVerified = true;
           await findUser.save();
+          res.send("Email verified successfully");
         } else {
           return res.status(401).json({
             success: false,
             message: "User not found",
           });
         }
-        res.send("Email verified successfully");
       }
     });
   }
