@@ -5,25 +5,20 @@ export const CreateContext = createContext();
 export const CreateContextProvider = (props) => {
   const [isLoggedIn, setLoggedIn] = useState(false);
   const [AccessToken, setAccessToken] = useState(localStorage.getItem("accessToken") || '');
-  const [refreshToken, setrefreshToken] = useState('');
+  const [RefreshToken, setRefreshToken] = useState(localStorage.getItem("refreshToken") || '');
 
   const LoggedIn = () => {
-    setLoggedIn(true)
+    setLoggedIn(true);
   };
 
-  const setaccessLocalStorage = () => {
-  }
-
-  const getaccessLocalStorage = () => {
-    return localStorage.getItem("accessToken") || "";
-  }
-
   const Logout = () => {
-    setLoggedIn(false)
-  }
+    setLoggedIn(false);
+    setAccessToken('');
+    localStorage.removeItem("accessToken"); 
+  };
 
   return (
-    <CreateContext.Provider value={{ isLoggedIn, LoggedIn, Logout, AccessToken, setAccessToken, setaccessLocalStorage, getaccessLocalStorage }}>
+    <CreateContext.Provider value={{ isLoggedIn, LoggedIn, Logout, AccessToken, setAccessToken,RefreshToken,setRefreshToken}}>
       {props.children}
     </CreateContext.Provider>
   );

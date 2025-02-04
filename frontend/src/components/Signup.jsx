@@ -11,7 +11,6 @@ export default function Signup() {
         resolver: yupResolver(signupUser),
     });
 
-    const {accessToken } = useContext(CreateContext);
 
     const handleRegistration = async (data, e) => {
         try {

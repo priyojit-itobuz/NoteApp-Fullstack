@@ -4,6 +4,8 @@ import bcrypt from "bcryptjs";
 import { mailSender } from "../EmailVerify/mailSender.js";
 import session from "../models/sessionModel.js";
 
+console.log(process.env);
+
 
 //SignUp or Register User
 export const register = async (req, res) => {

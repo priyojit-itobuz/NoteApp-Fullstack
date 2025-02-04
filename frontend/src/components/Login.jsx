@@ -13,9 +13,8 @@ export default function Login() {
         resolver: yupResolver(loginUser),
     });
     const navigate = useNavigate();
-    const { isLoggedIn,LoggedIn,AccessToken,setAccessToken } = useContext(CreateContext);
-    // let accessToken = JSON.parse(localStorage.getItem("accessToken")) || "";
-    // let refreshToken = JSON.parse(localStorage.getItem("refreshToken")) || "";
+    const { isLoggedIn,LoggedIn,AccessToken,setAccessToken,RefreshToken,setRefreshToken } = useContext(CreateContext);
+
 
     const handleSignin = async(data) => {
         try {
@@ -27,12 +26,12 @@ export default function Login() {
                 console.log(res.data)
                 console.log(res.data.accessToken);
                 const {accessToken, refreshToken} = res.data;
+                localStorage.setItem("accessToken", accessToken);
+                localStorage.setItem("refreshToken",refreshToken)
                 setAccessToken(accessToken);
-                localStorage.setItem("accessToken", AccessToken);
-                console.log("Access token is", AccessToken);
+                setRefreshToken(refreshToken);
                 toast.success("Login Successfull");
                 LoggedIn();
-                // setaccessLocalStorage();
                 navigate("/")
             }
         }
