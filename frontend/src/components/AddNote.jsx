@@ -15,6 +15,9 @@ export default function AddNote() {
 
     const { isLoggedIn, Logout, AccessToken ,user,setUser} = useContext(CreateContext);
 
+    console.log("THIS IS ADDNOTE",isLoggedIn);
+    
+
     // const token = AccessToken;
     const handleAddNote = async (data, e) => {
         try {
@@ -40,7 +43,7 @@ export default function AddNote() {
     return (
         <div>
             <Navbar />
-            <h1 className='mt-10 font-medium text-xl md:mt-14 text-2xl'>Add a Note</h1>
+            <h1 className='mt-10 font-medium text-xl md:mt-14 md:text-2xl'>Add a Note</h1>
 
             <form onSubmit={handleSubmit(handleAddNote)}>
                 <div className="max-w-xl mx-auto mt-16 flex w-full flex-col border rounded-lg bg-white p-8">

@@ -1,13 +1,14 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { CreateContext } from '../context/myContext';
 
 export default function Navbar() {
     const [navbar, setNavbar] = useState(false);
-    const { isLoggedIn, Logout, AccessToken ,user,setUser} = useContext(CreateContext);
+    const { isLoggedIn, Logout, AccessToken ,setLoggedIn,user,setUser} = useContext(CreateContext);
     
     // Persist login state using localStorage
     const [token, setToken] = useState(localStorage.getItem("accessToken") || '');
+    const navigate = useNavigate();
 
     useEffect(() => {
         if (AccessToken) {
@@ -23,8 +24,10 @@ export default function Navbar() {
         Logout();
         localStorage.removeItem("accessToken");
         localStorage.removeItem("userName");
+        localStorage.removeItem("loginstatus");
         setUser('');
         setToken('');
+        navigate("/login")
     }
 
     return (

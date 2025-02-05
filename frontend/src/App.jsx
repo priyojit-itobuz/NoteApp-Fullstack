@@ -1,11 +1,12 @@
 import { Route, Routes } from 'react-router-dom'
 import './App.css'
 import Navbar from './components/Navbar'
-import Signup from './components/Signup'
-import Login from './components/Login'
+import Signup from './pages/Signup'
+import Login from './pages/Login'
 import VerifyEmail from './pages/VerifyEmail'
 import AddNote from './components/AddNote'
-import Home from './components/Home'
+import Home from './pages/Home'
+import EditNote from './pages/EditNote'
 function App() {
   return (
     <>
@@ -15,6 +16,7 @@ function App() {
       <Route path='/signup' element={<Signup/>}/>
       <Route path='/verify/:token' element={<VerifyEmail />} />
       <Route path='/login' element={<Login/>} />
+      <Route path='/edit/:id' element={<EditNote/>}/>
     </Routes>  
     </>
   )

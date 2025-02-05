@@ -13,7 +13,7 @@ export default function Login() {
         resolver: yupResolver(loginUser),
     });
     const navigate = useNavigate();
-    const { isLoggedIn,LoggedIn,AccessToken,setAccessToken,RefreshToken,setRefreshToken,user,setUser } = useContext(CreateContext);
+    const { isLoggedIn,setLoggedIn,LoggedIn,AccessToken,setAccessToken,RefreshToken,setRefreshToken,user,setUser } = useContext(CreateContext);
 
 
     const handleSignin = async(data) => {
@@ -35,9 +35,8 @@ export default function Login() {
                 setRefreshToken(refreshToken);
                 setUser(userName);
                 console.log("user is", user);
-                
-                toast.success("Login Successfull");
                 LoggedIn();
+                toast.success("Login Successfull");
                 navigate("/")
             }
         }
