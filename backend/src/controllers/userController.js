@@ -4,7 +4,6 @@ import bcrypt from "bcryptjs";
 import { mailSender } from "../EmailVerify/mailSender.js";
 import session from "../models/sessionModel.js";
 
-console.log(process.env);
 
 
 //SignUp or Register User
@@ -80,6 +79,9 @@ export const login = async (req, res) => {
   try {
     // Check if the email exists
     const currentUser = await user.findOne({ email: req.body.email });
+    console.log("my user",currentUser);
+    const userName = currentUser.userName;
+    
     const userId = currentUser._id;
     
     if (!currentUser) {
@@ -107,6 +109,7 @@ export const login = async (req, res) => {
       message: "Logged In",
       accessToken,
       refreshToken,
+      userName
     });
   } catch (error) {
     res.status(500).json({ error: "Internal server error" });

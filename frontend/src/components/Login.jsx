@@ -1,4 +1,4 @@
-import React, { useContext} from 'react'
+import React, { useContext, useEffect} from 'react'
 import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom'
 import { loginUser } from '../validation/userValidation';
@@ -13,7 +13,7 @@ export default function Login() {
         resolver: yupResolver(loginUser),
     });
     const navigate = useNavigate();
-    const { isLoggedIn,LoggedIn,AccessToken,setAccessToken,RefreshToken,setRefreshToken } = useContext(CreateContext);
+    const { isLoggedIn,LoggedIn,AccessToken,setAccessToken,RefreshToken,setRefreshToken,user,setUser } = useContext(CreateContext);
 
 
     const handleSignin = async(data) => {
@@ -23,13 +23,19 @@ export default function Login() {
                 headers: { 'Content-type': 'application/json' },
             })
             if(res.data.success) {
+                // setUser(data.email)
                 console.log(res.data)
                 console.log(res.data.accessToken);
-                const {accessToken, refreshToken} = res.data;
+                                
+                const {accessToken, refreshToken, userName} = res.data;
                 localStorage.setItem("accessToken", accessToken);
                 localStorage.setItem("refreshToken",refreshToken)
+                localStorage.setItem("userName",userName);
                 setAccessToken(accessToken);
                 setRefreshToken(refreshToken);
+                setUser(userName);
+                console.log("user is", user);
+                
                 toast.success("Login Successfull");
                 LoggedIn();
                 navigate("/")

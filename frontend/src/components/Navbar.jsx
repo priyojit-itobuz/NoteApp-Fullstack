@@ -4,7 +4,7 @@ import { CreateContext } from '../context/myContext';
 
 export default function Navbar() {
     const [navbar, setNavbar] = useState(false);
-    const { isLoggedIn, Logout, AccessToken } = useContext(CreateContext);
+    const { isLoggedIn, Logout, AccessToken ,user,setUser} = useContext(CreateContext);
     
     // Persist login state using localStorage
     const [token, setToken] = useState(localStorage.getItem("accessToken") || '');
@@ -22,6 +22,8 @@ export default function Navbar() {
     function handleLogout() {
         Logout();
         localStorage.removeItem("accessToken");
+        localStorage.removeItem("userName");
+        setUser('');
         setToken('');
     }
 
@@ -104,9 +106,10 @@ export default function Navbar() {
                                     </Link>
                                 </div>
                             ) : (
-                                <div className="mt-3 space-y-2 md:hidden">
+                                <div className="flex gap-4 justify-center items-center mt-3 space-y-2 md:hidden">
+                                    <div className='w-[50%]'>Hi,  <span className='text-green-600 uppercase font-semibold'>{user}</span></div>
                                     <button
-                                        className="inline-block w-full px-4 py-2 text-white text-center bg-gray-600 rounded-md shadow hover:bg-gray-800"
+                                        className="inline-block w-full px-4 py-2 text-white text-center bg-gray-600 rounded-md shadow hover:bg-gray-800 w-[50%]"
                                         onClick={handleLogout}
                                     >
                                         Logout
@@ -133,9 +136,10 @@ export default function Navbar() {
                             </Link>
                         </div>
                     ) : (
-                        <div className="hidden space-x-2 md:inline-block">
+                        <div className="hidden space-x-2 md:flex gap-4 justify-center items-center inline-block ">
+                            <div className='w-[50%]'>Hi,  <span className='text-green-600 uppercase font-semibold'>{user}</span></div>
                             <button
-                                className="inline-block w-full px-4 py-2 text-white text-center bg-gray-600 rounded-md shadow hover:bg-gray-800"
+                                className="inline-block w-full px-4 py-2 text-white text-center bg-gray-600 rounded-md shadow hover:bg-gray-800 w-[50%]" 
                                 onClick={handleLogout}
                             >
                                 Logout
