@@ -1,6 +1,6 @@
 import React, { useContext, useEffect} from 'react'
 import { useForm } from 'react-hook-form';
-import { useNavigate } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { loginUser } from '../validation/userValidation';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { toast } from 'react-toastify';
@@ -13,7 +13,7 @@ export default function Login() {
         resolver: yupResolver(loginUser),
     });
     const navigate = useNavigate();
-    const { isLoggedIn,setLoggedIn,LoggedIn,AccessToken,setAccessToken,RefreshToken,setRefreshToken,user,setUser } = useContext(CreateContext);
+    const { isLoggedIn,setLoggedIn,LoggedIn,AccessToken,setAccessToken,RefreshToken,setRefreshToken,user,setUser,Email,setEmail } = useContext(CreateContext);
 
 
     const handleSignin = async(data) => {
@@ -27,13 +27,15 @@ export default function Login() {
                 console.log(res.data)
                 console.log(res.data.accessToken);
                                 
-                const {accessToken, refreshToken, userName} = res.data;
+                const {accessToken, refreshToken, userName, email} = res.data;
                 localStorage.setItem("accessToken", accessToken);
                 localStorage.setItem("refreshToken",refreshToken)
                 localStorage.setItem("userName",userName);
+                localStorage.setItem("email",email);
                 setAccessToken(accessToken);
                 setRefreshToken(refreshToken);
                 setUser(userName);
+                setEmail(email);
                 console.log("user is", user);
                 LoggedIn();
                 toast.success("Login Successfull");
@@ -82,6 +84,7 @@ export default function Login() {
                                 />
                                 <p className='text-xs text-red-600 font-semibold'>{errors.password?.message}</p>
                             </div>
+                            <p>Dont have an Account?<Link to="/signup" className='text-blue-600 underline'> Sign Up</Link></p>
                             <button
                                 className="w-full bg-blue-500 hover:bg-blue-700 focus:ring-4 focus:outline-none font-medium rounded-lg text-sm px-5 py-2.5 text-center text-white"
                                 type="submit" 

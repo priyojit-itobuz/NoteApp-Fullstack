@@ -81,6 +81,7 @@ export const login = async (req, res) => {
     const currentUser = await user.findOne({ email: req.body.email });
     console.log("my user",currentUser);
     const userName = currentUser.userName;
+    const email = currentUser.email
     
     const userId = currentUser._id;
     
@@ -109,7 +110,8 @@ export const login = async (req, res) => {
       message: "Logged In",
       accessToken,
       refreshToken,
-      userName
+      userName,
+      email
     });
   } catch (error) {
     res.status(500).json({ error: "Internal server error" });

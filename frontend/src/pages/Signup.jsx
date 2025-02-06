@@ -5,6 +5,7 @@ import { useForm } from 'react-hook-form';
 import { toast } from 'react-toastify';
 import axios from 'axios'
 import { CreateContext } from '../context/myContext';
+import { Link } from 'react-router-dom';
 
 export default function Signup() {
     const { register, handleSubmit, formState: { errors }, reset } = useForm({
@@ -30,7 +31,6 @@ export default function Signup() {
         }
     }
 
-    // console.log("yoyo",accessToken);
     
     return (
         <div>
@@ -80,6 +80,7 @@ export default function Signup() {
                                 />
                                 <p className='text-xs  text-red-600 font-semibold'>{errors.password?.message}</p>
                             </div>
+                            <p>Already have an Account? <Link to="/login" className='text-blue-500 underline'> Login</Link></p>
                             <button
                                 className="w-full bg-blue-500 hover:bg-blue-700 focus:outline-none font-medium rounded-lg text-sm px-5 py-2 text-center text-white"
                                 type="submit"

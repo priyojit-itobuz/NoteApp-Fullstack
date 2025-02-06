@@ -9,6 +9,10 @@ import AddNote from './components/AddNote';
 import Home from './pages/Home';
 import EditNote from './pages/EditNote';
 import ProtectedRoute from './middleware/ProtectedRoute';  // Import the ProtectedRoute component
+// import Modal from './components/Modal';
+import ModalComponent from './components/Modal';
+import Profile from './pages/Profile';
+
 
 function App() {
   return (
@@ -18,13 +22,21 @@ function App() {
         <Route path='/signup' element={<Signup />} />
         <Route path='/verify/:token' element={<VerifyEmail />} />
         <Route path='/login' element={<Login />} />
+        <Route path='/modal' element={<ModalComponent/>}/>
 
-        {/* Protect AddNote and EditNote routes */}
         <Route 
           path='/addNote' 
           element={
             <ProtectedRoute>
               <AddNote />
+            </ProtectedRoute>
+          } 
+        />
+        <Route 
+          path='/profile' 
+          element={
+            <ProtectedRoute>
+              <Profile/>
             </ProtectedRoute>
           } 
         />

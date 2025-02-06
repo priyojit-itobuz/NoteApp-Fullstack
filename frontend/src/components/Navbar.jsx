@@ -4,7 +4,7 @@ import { CreateContext } from '../context/myContext';
 
 export default function Navbar() {
     const [navbar, setNavbar] = useState(false);
-    const { isLoggedIn, Logout, AccessToken ,setLoggedIn,user,setUser} = useContext(CreateContext);
+    const { isLoggedIn, Logout, AccessToken ,setLoggedIn,user,setUser,Email,setEmail} = useContext(CreateContext);
     
     // Persist login state using localStorage
     const [token, setToken] = useState(localStorage.getItem("accessToken") || '');
@@ -25,8 +25,10 @@ export default function Navbar() {
         localStorage.removeItem("accessToken");
         localStorage.removeItem("userName");
         localStorage.removeItem("loginstatus");
+        localStorage.removeItem("email");
         setUser('');
         setToken('');
+        setEmail('');
         navigate("/login")
     }
 
