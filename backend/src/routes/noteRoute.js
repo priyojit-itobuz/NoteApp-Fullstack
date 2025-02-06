@@ -1,5 +1,5 @@
 import express from 'express'
-import { addNote, deleteNote, getAllNote, getOneNote, getPaginatedNotes, getParticularUserNote, search, sortNotes, updateNote } from '../controllers/noteController.js';
+import { addNote, deleteNote, getAllNote, getOneNote, getPaginatedNotes, getParticularUserNote, search, searchSortPaginateNotes, sortNotes, updateNote } from '../controllers/noteController.js';
 import { validate } from '../middlewares/validateData.js';
 import { noteSchema } from '../validators/dataValidation.js';
 import { isLoggedIn } from '../middlewares/loginStatus.js';
@@ -16,6 +16,7 @@ route.put("/updateNote/:id",isLoggedIn,validate(noteSchema),updateNote)
 route.delete("/deleteNote/:id",isLoggedIn,deleteNote);
 route.get("/sort",isLoggedIn,sortNotes)
 route.post("/pic/:id",isLoggedIn,upload.single("pic"),uploadNotes)
+route.post("/searchSortPaginate",isLoggedIn,searchSortPaginateNotes)
 
 
 export default route;

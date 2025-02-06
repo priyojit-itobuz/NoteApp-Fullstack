@@ -273,3 +273,57 @@ export const sortNotes = async (req, res) => {
     });
   }
 };
+
+
+export const searchSortPaginateNotes = async (req, res) => {
+  try {
+    const userId = req.body.userId;
+    const { searchText } = req.body;
+    const sortField = req.query.sortField || "title";  // Default sort field
+    const sortOrder = req.query.sortOrder === "asc" ? 1 : -1;  // Default to descending
+    const page = parseInt(req.query.page) || 1;  // Default page = 1
+    const limit = parseInt(req.query.limit) || 10;  // Default limit = 10
+
+    if (!userId) {
+      return res.status(400).json({
+        success: false,
+        message: "userId is required.",
+      });
+    }
+
+    // Create filter for search
+    const filter = { userId };
+    if (searchText) {
+      filter.title = { $regex: searchText, $options: "i" };
+    }
+
+    // Calculate skip value for pagination
+    const skip = (page - 1) * limit;
+
+    // Fetch notes with search, sorting, and pagination
+    const notes = await note.find(filter)
+      .sort({ [sortField]: sortOrder })
+      .skip(skip)
+      .limit(limit);
+
+    const totalNotes = await note.countDocuments(filter);  // Total notes for pagination info
+
+    return res.status(200).json({
+      success: true,
+      message: "Notes fetched successfully.",
+      notes,
+      pagination: {
+        totalNotes,
+        currentPage: page,
+        totalPages: Math.ceil(totalNotes / limit),
+        limit,
+      },
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: "Internal Server Error",
+      error: error.message,
+    });
+  }
+};
