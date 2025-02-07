@@ -8,7 +8,7 @@ export const mailSender = async (email,token) => {
     const transporter = nodemailer.createTransport({
       service: "gmail",
       auth: {
-        user: "kundupriyojit21.com",
+        user: "priyojit@itobuz.com",
         pass: process.env.MAIL_PASSWORD,
       },
     });
@@ -31,7 +31,8 @@ export const mailSender = async (email,token) => {
       subject: 'Email Verification',
       template: 'email',
       context: {
-        token : `${token}`
+        token : `${token}`,
+        port : `${process.env.FRONTEND_PORT}`
       }
     };
 

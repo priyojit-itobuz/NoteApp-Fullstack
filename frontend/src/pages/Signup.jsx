@@ -21,13 +21,14 @@ export default function Signup() {
             })
             if(res.data.success) {
                 console.log(res.data.message)
-                toast.success("User Created! Check email for Verification");
+                toast.success(res.data.message);
                 e.target.reset()
             }
         }
 
         catch (error) {
-            toast.error(error.message)
+            console.log(error);
+            toast.error(error.response.data.error)
         }
     }
 

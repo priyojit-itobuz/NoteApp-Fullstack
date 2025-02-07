@@ -23,7 +23,6 @@ export default function Login() {
                 headers: { 'Content-type': 'application/json' },
             })
             if(res.data.success) {
-                // setUser(data.email)
                 console.log(res.data)
                 console.log(res.data.accessToken);
                                 
@@ -39,7 +38,7 @@ export default function Login() {
                 console.log("user is", user);
                 LoggedIn();
                 toast.success("Login Successfull");
-                navigate("/")
+                navigate("/notes")
             }
         }
 

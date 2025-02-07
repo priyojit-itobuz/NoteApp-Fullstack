@@ -1,5 +1,5 @@
 import { Button, Modal } from "flowbite-react";
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
 import { HiOutlineExclamationCircle } from "react-icons/hi";
 import { CreateContext } from "../context/myContext";
 import axios from "axios";
@@ -33,6 +33,9 @@ export default function ModalComponent({ deleteModal, setDeleteModal, notes, set
       toast.error(error.response?.data?.message || "Error deleting note.");
     }
   }
+
+
+
 
   return (
     <Modal show={deleteModal} size="md" onClose={() => setDeleteModal(false)} popup>

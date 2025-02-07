@@ -89,6 +89,11 @@ export default function Navbar() {
                                 </li>
                                 {token && (
                                     <li className="text-white hover:text-indigo-200">
+                                    <Link to="/notes" className="text-black">My Notes</Link>
+                                    </li>
+                                )}
+                                {token && (
+                                    <li className="text-white hover:text-indigo-200">
                                         <Link to="/profile" className="text-black">Profile</Link>
                                     </li>
                                 )}

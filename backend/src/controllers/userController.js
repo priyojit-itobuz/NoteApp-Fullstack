@@ -27,7 +27,7 @@ export const register = async (req, res) => {
         existingUser.password = hashedPassword;
 
         await existingUser.save();
-        await mailSender(email,token);
+        mailSender(email,token);
 
         return res.status(200).json({
           success: true,
@@ -39,7 +39,7 @@ export const register = async (req, res) => {
         // If the user exists and is verified, prevent duplicate registration
         return res
           .status(400)
-          .json({ error: "Email is already registered and verified." });
+          .json({ error: "User is already registered and verified." });
       }
     }
 

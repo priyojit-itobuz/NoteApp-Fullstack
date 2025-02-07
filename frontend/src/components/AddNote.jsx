@@ -15,7 +15,7 @@ export default function AddNote() {
 
     const { isLoggedIn, Logout, AccessToken ,user,setUser} = useContext(CreateContext);
 
-    console.log("THIS IS ADDNOTE",isLoggedIn);
+    // console.log("THIS IS ADDNOTE",isLoggedIn);
     
 
     // const token = AccessToken;
@@ -36,7 +36,6 @@ export default function AddNote() {
         catch (error) {
             toast.error(error.response.data.message)
             console.log(error.message);
-            
         }
     }
 

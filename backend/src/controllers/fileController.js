@@ -29,7 +29,8 @@ export const uploadNotes = async(req,res) => {
         await Note.save();
         return res.status(200).json({
             success : true,
-            message: `File uploaded successfully: ${req.file.filename}`
+            message: `File uploaded successfully: ${req.file.filename}`,
+            data: req.file.filename
         })
     }
     else

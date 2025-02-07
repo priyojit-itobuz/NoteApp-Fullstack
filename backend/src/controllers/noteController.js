@@ -274,6 +274,7 @@ export const sortNotes = async (req, res) => {
   }
 };
 
+// search,sort,pagination all in one
 
 export const searchSortPaginateNotes = async (req, res) => {
   try {
@@ -282,7 +283,7 @@ export const searchSortPaginateNotes = async (req, res) => {
     const sortField = req.query.sortField || "title";  // Default sort field
     const sortOrder = req.query.sortOrder === "asc" ? 1 : -1;  // Default to descending
     const page = parseInt(req.query.page) || 1;  // Default page = 1
-    const limit = parseInt(req.query.limit) || 10;  // Default limit = 10
+    const limit = parseInt(req.query.limit) || 5;  // Default limit = 10
 
     if (!userId) {
       return res.status(400).json({

@@ -1,6 +1,8 @@
 import React, { useContext } from 'react'
 import { CreateContext } from '../context/myContext';
 import Navbar from '../components/Navbar';
+import avatar from '../assets/avatar.jpg'
+
 
 export default function Profile() {
     const {user,Email} = useContext(CreateContext);
@@ -11,13 +13,13 @@ export default function Profile() {
             <div className="flex flex-col md:flex-row">
                 <div className="md:w-1/3 text-center mb-8 md:mb-0">
                     <img
-                        src="https://i.pravatar.cc/300"
+                        src={avatar}
                         alt="Profile Picture"
                         className="rounded-full w-48 h-48 mx-auto mb-4 border-4 border-indigo-800 transition-transform duration-300 hover:scale-105 ring ring-gray-300"
                     />
-                    <button className="mt-4 bg-indigo-800 text-white px-4 py-2 rounded-lg hover:bg-blue-900 transition-colors duration-300 ring ring-gray-300 hover:ring-indigo-300">
+                    {/* <button className="mt-4 bg-indigo-800 text-white px-4 py-2 rounded-lg hover:bg-blue-900 transition-colors duration-300 ring ring-gray-300 hover:ring-indigo-300">
                         Edit Profile
-                    </button>
+                    </button> */}
                 </div>
                 <div className="md:w-2/3 md:pl-8">
                     <h1 className="text-2xl font-bold text-indigo-800 mb-2">{user}</h1>

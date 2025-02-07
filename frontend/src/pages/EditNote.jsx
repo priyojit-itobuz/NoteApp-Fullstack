@@ -15,7 +15,7 @@ export default function EditNote() {
 
     const { AccessToken } = useContext(CreateContext);
     const navigate = useNavigate();
-    const { id } = useParams(); // Get the note ID from URL
+    const { id } = useParams(); 
 
     useEffect(() => {
         const getNote = async () => {
@@ -38,7 +38,8 @@ export default function EditNote() {
         if (id && AccessToken) {
             getNote();
         }
-    }, [id, AccessToken, setValue]); // Dependencies added
+    }, [id, AccessToken, setValue]); 
+    
 
     const handleEditNote = async (data) => {
         try {

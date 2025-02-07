@@ -7,16 +7,53 @@ import { toast } from 'react-toastify';
 import axios from 'axios';
 import { CreateContext } from '../context/myContext';
 import ModalComponent from './Modal';
+import { Button, Modal } from "flowbite-react";
 
-export default function Card({ title, content, id, setNotes, notes }) {
+export default function Card({ title, content, id, setNotes, notes, pic }) {
     const { AccessToken } = useContext(CreateContext);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [deleteModal, setDeleteModal] = useState(false);
+    const [flag, setFlag] = useState(false);
+    const[pics,setPics] = useState(pic);
+
+
+    const handleFileUpload = async (event) => {
+        const file = event.target.files[0];
+        try {
+            console.log("hello");
+            console.log("my id", id);
+            const formData = new FormData();
+            formData.append("pic", file);
+            const res = await axios.post(`http://localhost:3000/note/pic/${id}`, formData, { headers: { 'Authorization': `Bearer ${AccessToken}`, "Content-Type": "multipart/form-data" } });
+            console.log("res", res);
+
+
+            if (res.data.success) {
+                // console.log("data",formData);
+
+                // setPics(formData)
+                console.log("myfile", res.data);
+                console.log("img", res.data.data);
+                setPics(res.data.data)
+                //new add
+                localStorage.setItem(`pic/${title}`,res.data.data)
+                toast.success("File uploaded successfully!");
+            }
+        } catch (error) {
+            toast.error(error.response?.data?.message || "Failed to upload file");
+            console.error("Error updating note:", error);
+        }
+    }
+
+    function handleUpload() {
+        setIsModalOpen(true);
+        setFlag(true)
+    }
 
     return (
         <>
             <div className="p-4 cursor-pointer">
-                <div className="flex w-80 h-48 rounded-lg dark:bg-gray-800 bg-teal-400 shadow-md p-5 flex-col justify-between">
+                <div className="flex w-[300px] h-48 rounded-lg dark:bg-gray-800 bg-teal-400 shadow-md p-5 flex-col justify-between">
                     <div className="flex justify-between items-center mb-2">
                         <h2 className="text-white dark:text-white text-lg font-semibold truncate">
                             {title}
@@ -30,14 +67,17 @@ export default function Card({ title, content, id, setNotes, notes }) {
                                 size={20}
                                 onClick={() => setDeleteModal(true)}
                             />
-                            <FaFileUpload className="text-white hover:text-gray-300" size={20} />
+                            <FaFileUpload className="text-white hover:text-gray-300" size={20} onClick={handleUpload} />
+                            {/* <input type="file"  onChange={handleFileUpload} /> */}
+
                         </div>
                     </div>
 
                     <div className="flex-grow flex items-center justify-center">
-                        {/* do ... feature */}
                         <p className="text-center text-xl text-white dark:text-gray-300 line-clamp-3 overflow-hidden">
-                            {content}
+                            {/* {content} */}
+                            {content.length > 22 ? content.substring(0, 22) + "..." : content}
+                            {/* {content.substring(0, 22) + "..."} */}
                         </p>
                     </div>
 
@@ -52,23 +92,35 @@ export default function Card({ title, content, id, setNotes, notes }) {
                 </div>
             </div>
 
-
-
-            {/* Modal */}
             {isModalOpen && (
-                <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
-                    <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg w-96">
-                        <h2 className="text-lg font-semibold text-gray-800 dark:text-white mb-3">{title}</h2>
-                        <p className="text-gray-700 dark:text-gray-300">{content}</p>
-                        <button
-                            onClick={() => setIsModalOpen(false)}
-                            className="mt-4 bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600"
-                        >
-                            Close
-                        </button>
-                    </div>
+                <div>
+                    <Modal
+                        show={isModalOpen}
+                        onClose={() => {
+                            setIsModalOpen(false);
+                            setFlag(false);
+                        }}
+                    >
+                        <Modal.Header>{flag === false ? `Note Title : ${title}` : "Upload Image"}</Modal.Header>
+                        <Modal.Body>
+                            <div className="space-y-6 p-6">
+                                <p>{flag===true?(<input type='file' accept=".png, .jpg, .jpeg, .txt" onChange={handleFileUpload}/>):(<></>)}</p>
+                                <p className="text-base leading-relaxed text-gray-500 dark:text-gray-400 break-all">
+                                    {flag === false ? content : (<img src={`http://localhost:3000/uploads/${localStorage.getItem(`pic/${title}`)}`} alt={pics} />)}
+                                </p>
+                            </div>
+                        </Modal.Body>
+                        <Modal.Footer>
+                            <Button onClick={() => {
+                                setIsModalOpen(false);
+                                setFlag(false);
+                            }}>Close</Button>
+
+                        </Modal.Footer>
+                    </Modal>
                 </div>
             )}
+
 
             {deleteModal && (<ModalComponent deleteModal={deleteModal} setDeleteModal={setDeleteModal} id={id} notes={notes} setNotes={setNotes} />)}
         </>
