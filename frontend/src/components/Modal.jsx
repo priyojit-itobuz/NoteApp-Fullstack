@@ -11,30 +11,7 @@ export default function ModalComponent({ deleteModal, setDeleteModal, notes, set
   const { AccessToken } = useContext(CreateContext);
 
   // Delete note function
-  // async function handleDelete() {
-  //   if (!AccessToken) {
-  //     toast.error("Unauthorized. Please log in.");
-  //     return;
-  //   }
 
-  //   try {
-  //     const res = await axios.delete(`http://localhost:3000/note/deleteNote/${id}`, {
-  //       headers: { Authorization: `Bearer ${AccessToken}` }
-  //     });
-
-  //     if (res.data.success) {
-  //       toast.success("Note deleted successfully.");
-  //       // Remove the deleted note from the notes array
-  //       setNotes(notes.filter(note => note._id !== id));
-  //       setDeleteModal(false); // Close the modal after success
-  //     } else {
-  //       toast.error("Failed to delete the note.");
-  //     }
-  //   } catch (error) {
-  //     console.error("Error deleting note:", error);
-  //     toast.error(error.response?.data?.message || "Error deleting note.");
-  //   }
-  // }
 
   async function handleDelete() {
     if (!AccessToken) {

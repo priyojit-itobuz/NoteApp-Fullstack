@@ -31,10 +31,14 @@ export default function AddNote() {
                 toast.success("Note Added SuccessFully");
                 e.target.reset()
             }
+            else
+            {
+                toast.error("JWT Expired")
+            }
         }
 
         catch (error) {
-            toast.error(error.response.data.message)
+            toast.error("Your Access Token Expired , Login Again")
             console.log(error.message);
         }
     }

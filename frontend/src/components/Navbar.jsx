@@ -6,8 +6,8 @@ import axios from 'axios';
 
 export default function Navbar() {
     const [navbar, setNavbar] = useState(false);
-    const { isLoggedIn, Logout, AccessToken ,setLoggedIn,user,setUser,Email,setEmail} = useContext(CreateContext);
-    
+    const { isLoggedIn, Logout, AccessToken, setLoggedIn, user, setUser, Email, setEmail } = useContext(CreateContext);
+
     // Persist login state using localStorage
     const [token, setToken] = useState(localStorage.getItem("accessToken") || '');
     const navigate = useNavigate();
@@ -23,11 +23,11 @@ export default function Navbar() {
     }, [AccessToken, isLoggedIn]);
 
     async function handleLogout() {
-        try{
-            const res = await axios.post("http://localhost:3000/logout", {},{
-                headers: {'Authorization': `Bearer ${AccessToken}`}
+        try {
+            const res = await axios.post("http://localhost:3000/logout", {}, {
+                headers: { 'Authorization': `Bearer ${AccessToken}` }
             })
-            if(res.data.success) {
+            if (res.data.success) {
                 console.log(res.data.message)
                 toast.success(res.data.message);
                 Logout();
@@ -41,12 +41,11 @@ export default function Navbar() {
                 navigate("/login")
             }
         }
-        catch(error)
-        {
+        catch (error) {
             toast.error(error.message)
             console.log(error);
         }
-        
+
     }
 
     return (
@@ -96,7 +95,7 @@ export default function Navbar() {
                             </div>
                         </div>
                     </div>
-                    
+
                     {/* Navbar Links */}
                     <div>
                         <div className={`flex-1 justify-self-center pb-3 mt-8 md:block md:pb-0 md:mt-0 ${navbar ? "block" : "hidden"}`}>
@@ -106,7 +105,7 @@ export default function Navbar() {
                                 </li>
                                 {token && (
                                     <li className="text-white hover:text-indigo-200">
-                                    <Link to="/notes" className="text-black">My Notes</Link>
+                                        <Link to="/notes" className="text-black">My Notes</Link>
                                     </li>
                                 )}
                                 {token && (
@@ -134,7 +133,9 @@ export default function Navbar() {
                                 </div>
                             ) : (
                                 <div className="flex gap-4 justify-center items-center mt-3 space-y-2 md:hidden">
-                                    <div className='w-[50%]'>Hi,  <span className='text-green-600 uppercase font-semibold'>{user}</span></div>
+                                    <div className='text-black flex'>
+                                Hi, <span className='text-green-600 uppercase font-semibold'>{user}</span>
+                            </div>
                                     <button
                                         className="inline-block w-full px-4 py-2 text-white text-center bg-gray-600 rounded-md shadow hover:bg-gray-800 w-[50%]"
                                         onClick={handleLogout}
@@ -163,10 +164,12 @@ export default function Navbar() {
                             </Link>
                         </div>
                     ) : (
-                        <div className="hidden space-x-2 md:flex gap-4 justify-center items-center inline-block ">
-                            <div className='w-[50%]'>Hi,  <span className='text-green-600 uppercase font-semibold'>{user}</span></div>
+                        <div className="hidden md:flex gap-4 items-center">
+                            <div className='text-black'>
+                                Hi, <span className='text-green-600 uppercase font-semibold'>{user}</span>
+                            </div>
                             <button
-                                className="inline-block w-full px-4 py-2 text-white text-center bg-gray-600 rounded-md shadow hover:bg-gray-800 w-[50%]" 
+                                className="px-4 py-2 text-white bg-gray-600 rounded-md shadow hover:bg-gray-800"
                                 onClick={handleLogout}
                             >
                                 Logout
@@ -178,7 +181,5 @@ export default function Navbar() {
         </>
     );
 }
-
-
 
 
