@@ -13,25 +13,23 @@ export const verifyToken = async (req, res) => {
 
     jwt.verify(token, process.env.SECRET_KEY, async (error, decoded) => {
       if (error) {
-        console.log(error);
-        res.send(
-          "Email verification failed, possibly the link is invalid or expired"
-        );
-        res.status(401).json({ error: "Unauthorized" });
-      } else {
-        const id = decoded.userId;
+        return res.status(401).json({ error: "Verification failed. The link may be invalid or expired." });
+      }
 
-        const findUser = await user.findById(id);
-        if (findUser) {
-          findUser.isVerified = true;
-          await findUser.save();
-          res.send("Email verified successfully");
-        } else {
-          return res.status(401).json({
-            success: false,
-            message: "User not found",
-          });
+      const id = decoded.userId;
+      const findUser = await user.findById(id);
+
+      if (findUser) {
+        if (findUser.isVerified) {
+          return res.status(200).json({ success: true, message: "Email already verified!" });
         }
+
+        findUser.isVerified = true;
+        await findUser.save();
+
+        return res.status(200).json({ success: true, message: "Email verified successfully!" });
+      } else {
+        return res.status(404).json({ success: false, message: "User not found. Please register again." });
       }
     });
   }

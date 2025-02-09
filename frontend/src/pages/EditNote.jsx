@@ -49,7 +49,7 @@ export default function EditNote() {
 
             if (res.data.success) {
                 toast.success("Note updated successfully!");
-                navigate('/');
+                navigate('/notes');
             }
         } catch (error) {
             toast.error(error.response?.data?.message || "Failed to update note");

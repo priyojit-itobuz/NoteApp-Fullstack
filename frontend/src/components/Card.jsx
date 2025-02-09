@@ -9,12 +9,12 @@ import { CreateContext } from '../context/myContext';
 import ModalComponent from './Modal';
 import { Button, Modal } from "flowbite-react";
 
-export default function Card({ title, content, id, setNotes, notes, pic }) {
+export default function Card({ title, content, id, setNotes, notes, pic, fetchNotes }) {
     const { AccessToken } = useContext(CreateContext);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [deleteModal, setDeleteModal] = useState(false);
     const [flag, setFlag] = useState(false);
-    const[pics,setPics] = useState(pic);
+    const [pics, setPics] = useState(pic);
 
 
     const handleFileUpload = async (event) => {
@@ -36,7 +36,7 @@ export default function Card({ title, content, id, setNotes, notes, pic }) {
                 console.log("img", res.data.data);
                 setPics(res.data.data)
                 //new add
-                localStorage.setItem(`pic/${title}`,res.data.data)
+                localStorage.setItem(`pic/${title}`, res.data.data)
                 toast.success("File uploaded successfully!");
             }
         } catch (error) {
@@ -104,7 +104,7 @@ export default function Card({ title, content, id, setNotes, notes, pic }) {
                         <Modal.Header>{flag === false ? `Note Title : ${title}` : "Upload Image"}</Modal.Header>
                         <Modal.Body>
                             <div className="space-y-6 p-6">
-                                <p>{flag===true?(<input type='file' accept=".png, .jpg, .jpeg, .txt" onChange={handleFileUpload}/>):(<></>)}</p>
+                                <p>{flag === true ? (<input type='file' accept=".png, .jpg, .jpeg, .txt" onChange={handleFileUpload} />) : (<></>)}</p>
                                 <p className="text-base leading-relaxed text-gray-500 dark:text-gray-400 break-all">
                                     {flag === false ? content : (<img src={`http://localhost:3000/uploads/${localStorage.getItem(`pic/${title}`)}`} alt={pics} />)}
                                 </p>
@@ -122,7 +122,7 @@ export default function Card({ title, content, id, setNotes, notes, pic }) {
             )}
 
 
-            {deleteModal && (<ModalComponent deleteModal={deleteModal} setDeleteModal={setDeleteModal} id={id} notes={notes} setNotes={setNotes} />)}
+            {deleteModal && (<ModalComponent deleteModal={deleteModal} setDeleteModal={setDeleteModal} id={id} notes={notes} setNotes={setNotes} fetchNotes={fetchNotes} />)}
         </>
     );
 }

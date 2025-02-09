@@ -4,25 +4,33 @@ import { Link, useParams } from 'react-router-dom'
 
 const VerifyEmail = () => {
     const [message, setMessage] = useState('Verifying...');
-    const params = useParams()
-    const token = params.token
+    const [flag,setFlag] = useState(false)
+    const params = useParams();
+    const token = params.token;
 
     useEffect(() => {
         const verify = async () => {
             try {
-                console.log(token)
+                console.log("Verifying token:", token);
                 const res = await fetch(`http://localhost:3000/verify/${token}`, {
                     method: "POST",
                     headers: {
+                        "Content-Type": "application/json",
                         Authorization: `Bearer ${token}`,
                     },
                 });
-                const jsonData = await res.json()
-                console.log(jsonData)
-                setMessage('Email verified successfully!\nYou can Login now');
+
+                const jsonData = await res.json();
+
+                if (res.ok) {
+                    setFlag(true)
+                    setMessage(jsonData.message || "Email verified successfully! You can Login now.");
+                } else {
+                    setMessage(jsonData.message || "Verification failed. The link may have expired.");
+                }
             } catch (error) {
-                console.log(error)
-                setMessage('Verification failed. The link may have expired.');
+                console.log(error);
+                setMessage("Verification failed. The link may have expired.");
             }
         };
         verify();
@@ -31,12 +39,11 @@ const VerifyEmail = () => {
     return (
         <div>
             <h2>Email Verification</h2>
-            <pre>Email verified successfully!\nYou can Login now</pre>
-            Click here to<Link to="/login" className="text-blue-600 underline "> Login</Link>
+            <pre>{message}</pre>
+            {flag === true ? (<p>Click here to<Link to="/login" className="text-blue-600 underline "> Login</Link></p>):(<></>)}
         </div>
     );
 };
 
-export default VerifyEmail
-
+export default VerifyEmail;
 

@@ -7,6 +7,7 @@ import session from "../models/sessionModel.js";
 
 
 //SignUp or Register User
+
 export const register = async (req, res) => {
   try {
     const { userName, email, password } = req.body;
@@ -16,30 +17,20 @@ export const register = async (req, res) => {
 
     if (existingUser) {
       if (!existingUser.isVerified) {
-        // If the user exists but is not verified, update the token and password
-        const autoId = user._id;
-        const token = jwt.sign({ autoId }, process.env.SECRET_KEY, {
+        // If the user exists but is not verified, resend verification email with the same userId
+        const token = jwt.sign({ userId: existingUser._id }, process.env.SECRET_KEY, {
           expiresIn: "10m",
         });
-        const hashedPassword = await bcrypt.hash(password, 10);
 
-        existingUser.userName = userName;
-        existingUser.password = hashedPassword;
-
-        await existingUser.save();
-        mailSender(email,token);
+        await mailSender(email, token);
 
         return res.status(200).json({
           success: true,
-          message:
-            "User already exists but not verified. Verification email sent again.",
-          token,
+          message: "User already exists but not verified. Verification email sent again.",
         });
       } else {
         // If the user exists and is verified, prevent duplicate registration
-        return res
-          .status(400)
-          .json({ error: "User is already registered and verified." });
+        return res.status(400).json({ error: "User is already registered and verified. Please log in." });
       }
     }
 
@@ -50,28 +41,30 @@ export const register = async (req, res) => {
       userName,
       email,
       password: hashedPassword,
+      isVerified: false, // Ensure verification is required
     });
 
     await newUser.save();
-    const userId = newUser._id;
-    const token = jwt.sign({ userId }, process.env.SECRET_KEY, {
+    const token = jwt.sign({ userId: newUser._id }, process.env.SECRET_KEY, {
       expiresIn: "10m",
     });
-    await mailSender(email,token);
+
+    await mailSender(email, token);
 
     res.status(201).json({
       success: true,
       message: "User registered successfully. Verification email sent.",
-      token,
     });
+
   } catch (error) {
+    console.error("Registration Error:", error);
     res.status(500).json({
       success: false,
-      message: error.message,
-      data: "Internal server error",
+      message: "Internal server error",
     });
   }
 };
+
 
 
 //login
@@ -159,8 +152,8 @@ export const logout = async (req, res) => {
     const deleteSession = await session.deleteMany({userId : id})
     
     if (searchUser && searchUser.isVerified === true) {
-      searchUser.isVerified = false;
-      searchUser.save();
+      // searchUser.isVerified = false;
+      // searchUser.save();
       res.status(200).json({
         success: true,
         message: "User logout success",

@@ -1,3 +1,6 @@
+
+
+
 import React, { useContext, useEffect, useState } from 'react';
 import Navbar from '../components/Navbar';
 import Card from '../components/Card';
@@ -24,26 +27,28 @@ export default function Notes() {
   }
 
   // Function to fetch notes with search, sorting, and pagination
+
   async function fetchNotes(page = 1) {
     if (!AccessToken) return;
-
+  
     try {
       const res = await axios.post(
         `http://localhost:3000/note/searchSortPaginate?sortField=${sortField}&sortOrder=${sortOrder}&page=${page}&limit=${limit}`,
         { searchText }, 
-        { headers: { 'Authorization': `Bearer ${AccessToken}`, 'Content-Type': 'application/json' },"Content-Type": "multipart/form-data", }
+        { headers: { 'Authorization': `Bearer ${AccessToken}`, 'Content-Type': 'application/json' } }
       );
-
+  
       if (res.data.success) {
         console.log("Fetched notes", res.data);
         setNotes(res.data.notes);
         setCurrentPage(res.data.pagination.currentPage);
-        setTotalPages(res.data.pagination.totalPages);
+        setTotalPages(Math.max(1, res.data.pagination.totalPages)); // Ensure totalPages is at least 1
       }
     } catch (error) {
       console.error("Error fetching notes:", error.message);
     }
   }
+  
 
   // Handle search input change
   const handleInputChange = (e) => {
@@ -133,6 +138,7 @@ export default function Notes() {
                 pic={note.pic}
                 setNotes={setNotes}
                 notes={notes}
+                fetchNotes={fetchNotes}
               />
             ))}
           </div>
