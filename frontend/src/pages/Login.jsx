@@ -1,4 +1,4 @@
-import React, { useContext } from 'react'
+import React, { useContext, useEffect } from 'react'
 import { useForm } from 'react-hook-form';
 import { Link, useNavigate } from 'react-router-dom'
 import { loginUser } from '../validation/userValidation';
@@ -36,9 +36,13 @@ export default function Login() {
             }
         }
         catch (error) {
-            toast.error("Invalid Credentials");
+            console.log(error);
+            toast.error(error.response.data.message);
         }
     }
+
+    
+
 
     return (
         <div>

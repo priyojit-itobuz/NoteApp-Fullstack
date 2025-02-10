@@ -1,5 +1,5 @@
 // ProtectedRoute.jsx
-import React, { useContext } from 'react';
+import React, { useContext, useEffect } from 'react';
 import { Navigate } from 'react-router-dom';
 import { CreateContext } from '../context/myContext';
 
@@ -8,6 +8,7 @@ import { CreateContext } from '../context/myContext';
 
 const ProtectedRoute = ({ children }) => {
   const { isLoggedIn } = useContext(CreateContext);
+
 
 
   if (!isLoggedIn) {

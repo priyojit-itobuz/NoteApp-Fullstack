@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { yupResolver } from "@hookform/resolvers/yup";
 import { signupUser } from '../validation/userValidation';
 import { useForm } from 'react-hook-form';
@@ -11,6 +11,9 @@ export default function Signup() {
         resolver: yupResolver(signupUser),
     });
 
+
+ 
+
     const handleRegistration = async (data, e) => {
         try {
             const res = await axios.post("http://localhost:3000/register", data, {
@@ -22,6 +25,7 @@ export default function Signup() {
                 e.target.reset();
             }
         } catch (error) {
+            console.log(error);
             toast.error(error.response?.data?.error || "Something went wrong");
         }
     };

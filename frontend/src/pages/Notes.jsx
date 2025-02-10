@@ -1,6 +1,3 @@
-
-
-
 import React, { useContext, useEffect, useState } from 'react';
 import Navbar from '../components/Navbar';
 import Card from '../components/Card';
@@ -8,6 +5,7 @@ import { IoAddCircleSharp } from "react-icons/io5";
 import { useNavigate } from 'react-router-dom';
 import { CreateContext } from '../context/myContext';
 import axios from 'axios';
+import { toast } from 'react-toastify';
 
 export default function Notes() {
   const navigate = useNavigate();
@@ -42,7 +40,7 @@ export default function Notes() {
         console.log("Fetched notes", res.data);
         setNotes(res.data.notes);
         setCurrentPage(res.data.pagination.currentPage);
-        setTotalPages(Math.max(1, res.data.pagination.totalPages)); // Ensure totalPages is at least 1
+        setTotalPages(Math.max(1, res.data.pagination.totalPages)); // we set min totalPages is at least 1
       }
     } catch (error) {
       console.error("Error fetching notes:", error.message);
@@ -80,6 +78,8 @@ export default function Notes() {
   useEffect(() => {
     fetchNotes(currentPage);
   }, [isLoggedIn, AccessToken, searchText, sortField, sortOrder]);
+
+
 
   return (
     <div>

@@ -73,21 +73,31 @@ export const login = async (req, res) => {
     // Check if the email exists
     const currentUser = await user.findOne({ email: req.body.email });
     console.log("my user",currentUser);
+    if (!currentUser) {
+      return res.status(404).json({ message: "User not Found" });
+    }
     const userName = currentUser.userName;
     const email = currentUser.email
+    if(currentUser.isVerified === false)
+    {
+      return res.status(400).json({
+        success : false,
+        message : "User not Verified"
+      })
+    }
     
     const userId = currentUser._id;
     
-    if (!currentUser) {
-      return res.status(401).json({ error: "Invalid credentials" });
-    }
+    // if (!currentUser) {
+    //   return res.status(404).json({ message: "User not Found" });
+    // }
 
     const passwordMatch = await bcrypt.compare(
       req.body.password,
       currentUser.password
     );
     if (!passwordMatch) {
-      return res.status(401).json({ error: "Invalid credentials" });
+      return res.status(401).json({ message: "Invalid credentials" });
     }
     const accessToken = jwt.sign({ userId }, process.env.SECRET_KEY, {
       expiresIn: "15m",
@@ -107,7 +117,7 @@ export const login = async (req, res) => {
       email
     });
   } catch (error) {
-    res.status(500).json({ error: "Internal server error" });
+    res.status(500).json({ message: error.message });
   }
 };
 

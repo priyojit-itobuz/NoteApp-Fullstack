@@ -93,7 +93,7 @@ export default function Profile() {
                             className="rounded-full w-48 h-48 mx-auto mb-4 border-4 border-indigo-800 transition-transform duration-300 hover:scale-105 ring ring-gray-300"
                         />
                         {/* <FaFileUpload /> */}
-                        <div className='flex gap-3'>
+                        <div className='flex gap-3 justify-center items-center'>
                             <button className="mt-4 bg-indigo-800 text-white px-2 py-2 rounded-lg hover:bg-blue-900 transition-colors duration-300 ring ring-gray-300 hover:ring-indigo-300" onClick={() => setIsModalOpen(true)}>
                                 Edit Username
                             </button>
