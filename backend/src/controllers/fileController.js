@@ -1,6 +1,7 @@
 import multer from 'multer'
 import path from 'path'
 import note from "../models/noteModel.js";
+import user from '../models/userModel.js';
 
 const storage = multer.diskStorage({
     destination: './uploads',
@@ -16,7 +17,7 @@ export const upload = multer({
 
 
 export const uploadNotes = async(req,res) => {
-    
+
     const id = req.params.id;
     
     if (!req.file) {
@@ -39,5 +40,41 @@ export const uploadNotes = async(req,res) => {
             success : false,
             message: "Internal Error"
         })
+    }
+}
+
+//error
+export const uploadUserProfilePic = async(req,res) => {
+    try {
+        // not catching id
+        const id = req.body.userId;
+        console.log("my id",id);
+        
+        if (!req.file) {
+            return res.status(400).json({message : 'No file uploaded.'});
+        }
+        const searchUser = await user.findById(id);
+        console.log("pic",searchUser);
+        if(searchUser)
+            {
+                searchUser.pic = "http://localhost:3000/uploads/" + req.file.filename;
+                await searchUser.save();
+                return res.status(200).json({
+                    success : true,
+                    message: `File uploaded successfully: ${req.file.filename}`,
+                    data: req.file.filename
+                })
+            }
+            else
+            {
+                return res.status(500).json({
+                    success : false,
+                    message: "Internal Error"
+                })
+            }
+
+    } catch (error) {
+        console.log(error);
+        
     }
 }

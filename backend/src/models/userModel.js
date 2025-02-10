@@ -18,6 +18,10 @@ const userModel = new mongoose.Schema({
     type: Boolean,
     default: false,
   },
+  pic : {
+    type : String,
+    default : "",
+  },
 });
 
 export default mongoose.model("user", userModel);

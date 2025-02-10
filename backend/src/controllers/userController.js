@@ -171,3 +171,37 @@ export const logout = async (req, res) => {
     });
   }
 };
+
+
+export const changeUserName = async(req,res) => {
+  try{
+    const {userName} = req.body;
+    const id = req.body.userId;
+    const searchUser = await user.findById(id);
+    if(searchUser)
+    {
+      console.log("my user",searchUser);  
+      searchUser.userName = userName;
+      await searchUser.save();
+      res.status(200).json({
+        success : true,
+        message : searchUser
+      })  
+    }
+    else
+    {
+      res.status(401).json({
+        success : false,
+        message : "Error in Updating Username"
+      })
+    }
+  }
+  catch(error)
+  {
+    console.log(error.message);
+    res.status(500).json({
+      success : false,
+      message: "Internal Server Error"
+    })
+  }
+}

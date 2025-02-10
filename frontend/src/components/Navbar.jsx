@@ -4,6 +4,8 @@ import { CreateContext } from '../context/myContext';
 import { toast } from 'react-toastify';
 import axios from 'axios';
 
+
+
 export default function Navbar() {
     const [navbar, setNavbar] = useState(false);
     const { isLoggedIn, Logout, AccessToken, setLoggedIn, user, setUser, Email, setEmail } = useContext(CreateContext);
@@ -55,7 +57,7 @@ export default function Navbar() {
                     <div>
                         <div className="flex items-center justify-between py-3 md:py-5 md:block">
                             <Link to="/">
-                                <h2 className="text-2xl font-bold text-black">NotesApp</h2>
+                                <h2 className="text-2xl font-bold text-black border-0">NotesApp</h2>
                             </Link>
                             <div className="md:hidden">
                                 <button
@@ -115,7 +117,7 @@ export default function Navbar() {
                                 )}
                             </ul>
 
-                            {/* Mobile View: Sign In / Sign Up / Logout */}
+                            {/* For Mobile */}
                             {!token ? (
                                 <div className="mt-3 space-y-2 md:hidden">
                                     <Link

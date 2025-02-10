@@ -1,11 +1,46 @@
-import React, { useContext } from 'react'
+import React, { useContext, useState } from 'react'
 import { CreateContext } from '../context/myContext';
 import Navbar from '../components/Navbar';
 import avatar from '../assets/avatar.jpg'
+import { Button, Modal , Label, TextInput } from 'flowbite-react';
+import { useForm } from 'react-hook-form';
+import axios from 'axios';
+import { toast } from 'react-toastify';
 
 
 export default function Profile() {
-    const {user,Email} = useContext(CreateContext);
+    // const {user,Email} = useContext(CreateContext);
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    // const [email, setEmail] = useState('');
+
+    const { register, handleSubmit, setValue } = useForm({});
+
+    const { AccessToken ,setUser,user,Email} = useContext(CreateContext);
+
+    function onCloseModal() {
+      setIsModalOpen(false);
+    }
+
+    const handleEditNote = async (data) => {
+        try {
+            const res = await axios.post(`http://localhost:3000/changeUserName`, data, {
+                headers: { 'Authorization': `Bearer ${AccessToken}` }
+            });
+
+            if (res.data.success) {               
+                const userName  = res.data.message.userName;
+                localStorage.setItem("userName", userName);
+                setUser(userName)
+                toast.success("UserName Updated Success");
+            }
+            setIsModalOpen(false);
+            
+        } catch (error) {
+            toast.error(error.response?.data?.message || "Failed to update Username");
+            console.error("Error updating UserName:", error.message);
+        }
+    };
+
     return (
         <>
         <Navbar/>
@@ -17,9 +52,9 @@ export default function Profile() {
                         alt="Profile Picture"
                         className="rounded-full w-48 h-48 mx-auto mb-4 border-4 border-indigo-800 transition-transform duration-300 hover:scale-105 ring ring-gray-300"
                     />
-                    {/* <button className="mt-4 bg-indigo-800 text-white px-4 py-2 rounded-lg hover:bg-blue-900 transition-colors duration-300 ring ring-gray-300 hover:ring-indigo-300">
-                        Edit Profile
-                    </button> */}
+                    <button className="mt-4 bg-indigo-800 text-white px-4 py-2 rounded-lg hover:bg-blue-900 transition-colors duration-300 ring ring-gray-300 hover:ring-indigo-300"  onClick={() => setIsModalOpen(true)}>
+                        Change Username
+                    </button>
                 </div>
                 <div className="md:w-2/3 md:pl-8">
                     <h1 className="text-2xl font-bold text-indigo-800 mb-2">{user}</h1>
@@ -76,6 +111,32 @@ export default function Profile() {
                 </div>
             </div>
         </div>
+
+        {isModalOpen && (
+                <Modal show={isModalOpen} size="md" onClose={onCloseModal} popup>
+                <Modal.Header />
+                <Modal.Body>
+                  <div className="space-y-6">
+                    <h3 className="text-xl font-medium text-gray-900 dark:text-white">Change Your UserName</h3>
+                    <div>
+                      <div className="mb-2 block">
+                        <Label htmlFor="userName" value="Your UserName" />
+                      </div>
+                      <TextInput
+                        id="userName"
+                        {...register('userName')}
+                        placeholder="xxxxx"
+                        required
+                      />
+                    </div>
+                    <div className="w-full">
+                      <Button onClick={handleSubmit(handleEditNote)}>Change UserName</Button>
+                    </div>
+                  </div>
+                </Modal.Body>
+              </Modal>
+            )}
+
         </>
     )
 }

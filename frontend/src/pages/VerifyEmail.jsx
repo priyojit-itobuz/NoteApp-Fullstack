@@ -21,8 +21,13 @@ const VerifyEmail = () => {
                 });
 
                 const jsonData = await res.json();
+                console.log("jsondata",jsonData);
+                console.log("ok",res.ok);
+                console.log("okkk",jsonData.success);
+                
+                
 
-                if (res.ok) {
+                if (jsonData.success) {
                     setFlag(true)
                     setMessage(jsonData.message || "Email verified successfully! You can Login now.");
                 } else {

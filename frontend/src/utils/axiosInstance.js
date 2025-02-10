@@ -33,10 +33,10 @@ axiosInstance.interceptors.response.use(
     }
   );
 
-  
-  import axiosInstance from '../utils/axiosInstance'; // Use the custom Axios instance (jbhabe use koreb, etak utils folder a rakho)
 
-//   to use
-const res = await axiosInstance.post("/login", data, {
-    headers: { 'Content-type': 'application/json' },
-});
+//   import axiosInstance from '../utils/axiosInstance'; // Use the custom Axios instance (jbhabe use koreb, etak utils folder a rakho)
+
+//   //   to use
+//   const res = await axiosInstance.post("/login", data, {
+//       headers: { 'Content-type': 'application/json' },
+//   });
