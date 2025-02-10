@@ -6,6 +6,7 @@ import { Button, Modal, Label, TextInput } from 'flowbite-react';
 import { useForm } from 'react-hook-form';
 import axios from 'axios';
 import { toast } from 'react-toastify';
+import axiosInstance from '../utils/axiosInstance';
 
 
 export default function Profile() {
@@ -23,8 +24,8 @@ export default function Profile() {
 
     const handleEditNote = async (data) => {
         try {
-            const res = await axios.post(`http://localhost:3000/changeUserName`, data, {
-                headers: { 'Authorization': `Bearer ${AccessToken}` }
+            const res = await axiosInstance.post(`/changeUserName`, data, {
+                // headers: { 'Authorization': `Bearer ${AccessToken}` }
             });
 
             if (res.data.success) {

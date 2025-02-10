@@ -7,6 +7,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import axios from 'axios';
 import { CreateContext } from '../context/myContext';
 import { toast } from 'react-toastify';
+import axiosInstance from '../utils/axiosInstance';
 
 export default function EditNote() {
     const { register, handleSubmit, formState: { errors }, setValue } = useForm({
@@ -43,8 +44,8 @@ export default function EditNote() {
 
     const handleEditNote = async (data) => {
         try {
-            const res = await axios.put(`http://localhost:3000/note/updateNote/${id}`, data, {
-                headers: { 'Authorization': `Bearer ${AccessToken}` }
+            const res = await axiosInstance.put(`/note/updateNote/${id}`, data, {
+                // headers: { 'Authorization': `Bearer ${AccessToken}` }
             });
 
             if (res.data.success) {

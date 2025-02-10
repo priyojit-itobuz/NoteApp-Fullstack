@@ -8,6 +8,7 @@ import axios from 'axios';
 import { CreateContext } from '../context/myContext';
 import ModalComponent from './Modal';
 import { Button, Modal } from "flowbite-react";
+import axiosInstance from '../utils/axiosInstance';
 
 export default function Card({ title, content, id, setNotes, notes, pic, fetchNotes }) {
     const { AccessToken } = useContext(CreateContext);
@@ -22,7 +23,7 @@ export default function Card({ title, content, id, setNotes, notes, pic, fetchNo
         try {
             const formData = new FormData();
             formData.append("pic", file);
-            const res = await axios.post(`http://localhost:3000/note/pic/${id}`, formData, { headers: { 'Authorization': `Bearer ${AccessToken}`, "Content-Type": "multipart/form-data" } });
+            const res = await axiosInstance.post(`/note/pic/${id}`, formData, { headers: { 'Authorization': `Bearer ${AccessToken}`, "Content-Type": "multipart/form-data" } });
             console.log("res", res);
 
 

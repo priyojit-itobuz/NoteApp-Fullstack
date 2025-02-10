@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { CreateContext } from '../context/myContext';
 import { toast } from 'react-toastify';
 import axios from 'axios';
+import axiosInstance from '../utils/axiosInstance';
 
 
 
@@ -26,8 +27,9 @@ export default function Navbar() {
 
     async function handleLogout() {
         try {
-            const res = await axios.post("http://localhost:3000/logout", {}, {
-                headers: { 'Authorization': `Bearer ${AccessToken}` }
+            const res = await axiosInstance.post("http://localhost:3000/logout", {}, 
+            {
+                // headers: { 'Authorization': `Bearer ${AccessToken}` }
             })
             if (res.data.success) {
                 console.log(res.data.message)

@@ -6,6 +6,7 @@ import { HiOutlineExclamationCircle } from "react-icons/hi";
 import { CreateContext } from "../context/myContext";
 import axios from "axios";
 import { toast } from "react-toastify";
+import axiosInstance from "../utils/axiosInstance";
 
 export default function ModalComponent({ deleteModal, setDeleteModal, notes, setNotes, id,fetchNotes }) {
   const { AccessToken } = useContext(CreateContext);
@@ -20,8 +21,8 @@ export default function ModalComponent({ deleteModal, setDeleteModal, notes, set
     }
   
     try {
-      const res = await axios.delete(`http://localhost:3000/note/deleteNote/${id}`, {
-        headers: { Authorization: `Bearer ${AccessToken}` },
+      const res = await axiosInstance.delete(`/note/deleteNote/${id}`, {
+        // headers: { Authorization: `Bearer ${AccessToken}` },
       });
   
       if (res.data.success) {

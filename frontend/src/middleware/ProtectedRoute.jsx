@@ -7,11 +7,11 @@ import { CreateContext } from '../context/myContext';
 //children hocche any component jake amra render korte chai
 
 const ProtectedRoute = ({ children }) => {
-  const { isLoggedIn } = useContext(CreateContext);
+  const { isLoggedIn,AccessToken } = useContext(CreateContext);
 
 
 
-  if (!isLoggedIn) {
+  if (!isLoggedIn ) {
     // If the user is not logged in, redirect them to the login page
     return <Navigate to="/login" />;
   }

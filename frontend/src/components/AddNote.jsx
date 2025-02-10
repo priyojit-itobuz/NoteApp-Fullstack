@@ -6,6 +6,7 @@ import { useForm } from 'react-hook-form';
 import { CreateContext } from '../context/myContext';
 import axios from 'axios';
 import { toast } from 'react-toastify';
+import axiosInstance from '../utils/axiosInstance';
 
 export default function AddNote() {
 
@@ -23,8 +24,8 @@ export default function AddNote() {
         try {
             console.log(data);
             // e.target.reset();
-            const res = await axios.post("http://localhost:3000/note/addNote", data, {
-                headers: {'Authorization': `Bearer ${AccessToken}`}
+            const res = await axiosInstance.post("/note/addNote", data, {
+                // headers: {'Authorization': `Bearer ${AccessToken}`}
             })
             if(res.data.success) {
                 console.log(res.data)

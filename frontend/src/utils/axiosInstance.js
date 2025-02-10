@@ -1,60 +1,59 @@
+import axios from "axios";
+
 const axiosInstance = axios.create({
-  baseURL: 'http:localhost:3000/',
-  headers: {
-     'Authorization': `Bearer ${AccessToken}`, 'Content-Type': 'application/json' 
-  },
+    baseURL: "http://localhost:3000/",
+    headers: {
+        "Content-Type": "application/json",
+    },
 });
 
-
-axiosInstance.interceptors.request.use(request => {
-  const accessToken = localStorage.getItem('accessToken');
-  if (accessToken) {
-    request.headers['Authorization'] = `Bearer ${accessToken}`;
-  }
-  return request;
-}, error => {
-  return Promise.reject(error);
-});
-
-axiosInstance.interceptors.response.use(
-    async (response) => response,
-    async (error) => {
-      const originalRequest = error.config;
-  
-      if (error.response?.status === 401 && !originalRequest._retry) {
-        originalRequest._retry = true;
-        try {
-          const refreshToken = localStorage.getItem('refreshToken');
-          const response = await axios.post('http://localhost:3000/getAccessToken', {}, {
-            headers: {
-              Authorization: `Bearer ${refreshToken}`,
-            },
-          });
-  
-          const newAccessToken = response.data.accessToken;
-          localStorage.setItem('accessToken', newAccessToken);
-  
-          // Update headers with the new access token and retry the original request
-          axiosInstance.defaults.headers.Authorization = `Bearer ${newAccessToken}`;
-          originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
-  
-          return axiosInstance(originalRequest); // Retry the original request
-        } catch (refreshError) {
-          toast.error('Session expired. Please log in again.');
-          localStorage.removeItem('accessToken');
-          localStorage.removeItem('refreshToken');
-          window.location.href = '/login'; // Redirect to login
+// Request Interceptor
+axiosInstance.interceptors.request.use(
+    (request) => {
+        const accessToken = localStorage.getItem("accessToken");
+        if (accessToken) {
+            request.headers["Authorization"] = `Bearer ${accessToken}`;
         }
-      }
-  
-      throw error; // Reject the promise for other errors
+        return request;
+    },
+    (error) => Promise.reject(error)
+);
+
+// Response Interceptor
+axiosInstance.interceptors.response.use(
+    (response) => response,
+    async (error) => {
+        if (error.response?.status === 401) {
+            const originalRequest = error.config;
+            if (!originalRequest._retry) {
+                originalRequest._retry = true;
+                try {
+                    const authHeader = localStorage.getItem("refreshToken");
+                    if (!authHeader) {
+                        throw new Error("No refresh token available");
+                    }
+                    
+                    const { data } = await axios.get("http://localhost:3000/getAccessToken", {
+                        headers: { Authorization: `Bearer ${authHeader}` },
+                    });
+
+                    if (data.success) {
+                        localStorage.setItem("accessToken", data.accessToken);
+                        axiosInstance.defaults.headers.common["Authorization"] = `Bearer ${data.accessToken}`;
+                        originalRequest.headers["Authorization"] = `Bearer ${data.accessToken}`;
+                        return axiosInstance(originalRequest);
+                    }
+                } catch (refreshError) {
+                    console.error("Token refresh failed", refreshError);
+                }
+            }
+            localStorage.removeItem("accessToken");
+            localStorage.removeItem("refreshToken");
+            // localStorage.removeItem("userDetails");
+            window.location.href = "/login";
+        }
+        return Promise.reject(error);
     }
-  );
+);
 
-
-//   import axiosInstance from '../utils/axiosInstance'; // Use the custom Axios instance (jbhabe use koreb, etak utils folder a rakho)
-
-//   //   to use
-//   const res = await axiosInstance.post("/login", data, {
-//       headers: { 'Content-type': 'application/json' },
-//   });
+export default axiosInstance;
