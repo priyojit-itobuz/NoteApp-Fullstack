@@ -20,8 +20,6 @@ export default function Card({ title, content, id, setNotes, notes, pic, fetchNo
     const handleFileUpload = async (event) => {
         const file = event.target.files[0];
         try {
-            console.log("hello");
-            console.log("my id", id);
             const formData = new FormData();
             formData.append("pic", file);
             const res = await axios.post(`http://localhost:3000/note/pic/${id}`, formData, { headers: { 'Authorization': `Bearer ${AccessToken}`, "Content-Type": "multipart/form-data" } });
@@ -29,13 +27,9 @@ export default function Card({ title, content, id, setNotes, notes, pic, fetchNo
 
 
             if (res.data.success) {
-                // console.log("data",formData);
-
-                // setPics(formData)
                 console.log("myfile", res.data);
                 console.log("img", res.data.data);
                 setPics(res.data.data)
-                //new add
                 localStorage.setItem(`pic/${title}`, res.data.data)
                 toast.success("File uploaded successfully!");
             }
@@ -68,7 +62,7 @@ export default function Card({ title, content, id, setNotes, notes, pic, fetchNo
                                 onClick={() => setDeleteModal(true)}
                             />
                             <FaFileUpload className="text-white hover:text-gray-300" size={20} onClick={handleUpload} />
-                            {/* <input type="file"  onChange={handleFileUpload} /> */}
+                            
 
                         </div>
                     </div>

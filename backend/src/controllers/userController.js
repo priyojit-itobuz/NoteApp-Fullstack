@@ -205,3 +205,69 @@ export const changeUserName = async(req,res) => {
     })
   }
 }
+
+
+
+export const uploadUserProfilePic = async (req, res) => {
+  try {
+    const id = req.body.userId
+    console.log("my id",id);
+
+    if (!req.file) {
+      return res.status(400).json({ message: "No file uploaded." });
+    }
+    
+    const searchUser = await user.findById(id);
+    console.log("profilePic", searchUser);
+    if (searchUser) {
+      searchUser.profilePic = "http://localhost:3000/uploads/" + req.file.filename;
+      await searchUser.save();
+      return res.status(200).json({
+        success: true,
+        message: `Profile Picture uploaded successfully: ${req.file.filename}`,
+        data: req.file.filename,
+      });
+    }
+    else
+    {
+      return res.status(400).json({
+        success : false,
+        message: "Profile Picture upload Failed"
+      })
+    }
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
+export const getUser = async(req,res) => {
+  try {
+    const id = req.body.userId;
+    const searchUser = await user.findById(id);
+    if(searchUser)
+    {
+        return res.status(200).json({
+          success : true,
+          message : "User Fetched Success",
+          searchUser
+        })
+    }
+    else
+    {
+      return res.status(400).json({
+        success : false,
+        message : "Failed to Fetch User"
+      })
+    }
+  } catch (error) {
+      console.log(error.message);
+      return res.status(500).json({
+        success : false,
+        message : error.message
+      })
+      
+  }
+}
