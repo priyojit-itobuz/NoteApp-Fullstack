@@ -11,6 +11,8 @@ import ModalComponent from './components/Modal';
 import Profile from './pages/Profile';
 import Notes from './pages/Notes';
 import Home from './pages/Home';
+import Admin from './pages/Admin';
+import UserNote from './pages/UserNote';
 
 
 function App() {
@@ -22,6 +24,8 @@ function App() {
         <Route path='/verify/:token' element={<VerifyEmail />} />
         <Route path='/login' element={<Login />} />
         <Route path='/modal' element={<ModalComponent />} />
+        <Route path='/admin' element={<Admin/>} />
+        <Route path='/userNote/:id' element={<UserNote/>}/>
 
         <Route
           path='/addNote'

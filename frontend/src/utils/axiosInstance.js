@@ -23,9 +23,8 @@ axiosInstance.interceptors.request.use(
 axiosInstance.interceptors.response.use(
     (response) => response,
     async (error) => {
-        if (error.response?.status === 401) {
-            const originalRequest = error.config;
-            if (!originalRequest._retry) {
+        const originalRequest = error.config;
+        if (error.response?.status === 401 && !originalRequest._retry) {
                 originalRequest._retry = true;
                 try {
                     const authHeader = localStorage.getItem("refreshToken");
@@ -33,24 +32,20 @@ axiosInstance.interceptors.response.use(
                         throw new Error("No refresh token available");
                     }
                     
-                    const { data } = await axios.get("http://localhost:3000/getAccessToken", {
+                    const res = await axios.get("http://localhost:3000/getAccessToken", {
                         headers: { Authorization: `Bearer ${authHeader}` },
                     });
 
-                    if (data.success) {
-                        localStorage.setItem("accessToken", data.accessToken);
-                        axiosInstance.defaults.headers.common["Authorization"] = `Bearer ${data.accessToken}`;
-                        originalRequest.headers["Authorization"] = `Bearer ${data.accessToken}`;
-                        return axiosInstance(originalRequest);
+                    if (res.data.success) {
+                        localStorage.setItem("accessToken", res.data.accessToken);
+                        originalRequest.headers["Authorization"] = `Bearer ${res.data.accessToken}`;
+                        return axios(originalRequest);
                     }
                 } catch (refreshError) {
                     console.error("Token refresh failed", refreshError);
                 }
-            }
             localStorage.removeItem("accessToken");
             localStorage.removeItem("refreshToken");
-            // localStorage.removeItem("userDetails");
-            window.location.href = "/login";
         }
         return Promise.reject(error);
     }

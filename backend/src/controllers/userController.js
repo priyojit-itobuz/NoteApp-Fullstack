@@ -10,10 +10,11 @@ import session from "../models/sessionModel.js";
 
 export const register = async (req, res) => {
   try {
-    const { userName, email, password } = req.body;
+    const { userName, email, password ,role} = req.body;
 
     // Check if the email already exists
     const existingUser = await user.findOne({ email });
+    
 
     if (existingUser) {
       if (!existingUser.isVerified) {
@@ -41,7 +42,8 @@ export const register = async (req, res) => {
       userName,
       email,
       password: hashedPassword,
-      isVerified: false, // Ensure verification is required
+      role,
+      isVerified: false, 
     });
 
     await newUser.save();
@@ -60,7 +62,7 @@ export const register = async (req, res) => {
     console.error("Registration Error:", error);
     res.status(500).json({
       success: false,
-      message: "Internal server error",
+      message: error.message,
     });
   }
 };
@@ -71,13 +73,17 @@ export const register = async (req, res) => {
 export const login = async (req, res) => {
   try {
     // Check if the email exists
-    const currentUser = await user.findOne({ email: req.body.email });
+    const { password} = req.body;
+    // const currentUser = await user.findOne({ email: req.body.email });
+    const currentUser = await user.findOne({ email: req.body.email },{password:1,email:1,userName:1,role:1}).exec();
     console.log("my user",currentUser);
     if (!currentUser) {
       return res.status(404).json({ message: "User not Found" });
     }
     const userName = currentUser.userName;
     const email = currentUser.email
+    const role = currentUser.role
+    // const currEmail = currentUser.email
     if(currentUser.isVerified === false)
     {
       return res.status(400).json({
@@ -88,18 +94,17 @@ export const login = async (req, res) => {
     
     const userId = currentUser._id;
     
-    // if (!currentUser) {
-    //   return res.status(404).json({ message: "User not Found" });
-    // }
 
     const passwordMatch = await bcrypt.compare(
-      req.body.password,
+      // req.body.password,
+      password,
       currentUser.password
     );
     if (!passwordMatch) {
       return res.status(401).json({ message: "Invalid credentials" });
     }
     const accessToken = jwt.sign({ userId }, process.env.SECRET_KEY, {
+      // 15m
       expiresIn: "15m",
     });
     const refreshToken = jwt.sign({ userId }, process.env.SECRET_KEY, {
@@ -114,6 +119,7 @@ export const login = async (req, res) => {
       accessToken,
       refreshToken,
       userName,
+      role,
       email
     });
   } catch (error) {
@@ -281,3 +287,4 @@ export const getUser = async(req,res) => {
       
   }
 }
+

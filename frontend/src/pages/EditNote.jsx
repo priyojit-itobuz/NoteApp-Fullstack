@@ -21,7 +21,7 @@ export default function EditNote() {
     useEffect(() => {
         const getNote = async () => {
             try {
-                const res = await axios.get(`http://localhost:3000/note/getOneNote/${id}`, {
+                const res = await axiosInstance.get(`note/getOneNote/${id}`, {
                     headers: { 'Authorization': `Bearer ${AccessToken}` }
                 });
 

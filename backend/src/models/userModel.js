@@ -13,6 +13,7 @@ const userModel = new mongoose.Schema({
   password: {
     type: String,
     required: true,
+    select : false,
   },
   isVerified: {
     type: Boolean,
@@ -22,6 +23,11 @@ const userModel = new mongoose.Schema({
     type : String,
     default : "",
   },
+  role : {
+    type : String,
+    enum : ['user','admin'],
+    required : true,
+  }
 });
 
 export default mongoose.model("user", userModel);

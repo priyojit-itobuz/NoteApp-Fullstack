@@ -38,6 +38,7 @@ export const addNote = async (req, res) => {
 export const getAllNote = async (req, res) => {
   try {
     const notes = await note.find({});
+    
     if (notes) {
       res.status(200).json({
         success: true,

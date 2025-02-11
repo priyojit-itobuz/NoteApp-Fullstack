@@ -25,7 +25,7 @@ export default function Notes() {
       setDebouncedSearchText(searchText);
     }, 300); // 300ms delay
 
-    return () => clearTimeout(timer); // Cleanup timeout on component unmount or searchText change
+    return () => clearTimeout(timer); // Clear timeout on component unmount or searchText change
   }, [searchText]);
 
   async function fetchNotes(page = 1) {

@@ -18,5 +18,4 @@ route.post("/changeProfilePic",upload.single("profilePic"),isLoggedIn,uploadUser
 route.get("/getUser",isLoggedIn,getUser);
 
 
-
 export default route;

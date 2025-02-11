@@ -9,7 +9,7 @@ import axiosInstance from '../utils/axiosInstance';
 
 export default function Navbar() {
     const [navbar, setNavbar] = useState(false);
-    const { isLoggedIn, Logout, AccessToken, setLoggedIn, user, setUser, Email, setEmail } = useContext(CreateContext);
+    const { isLoggedIn, Logout, AccessToken, setLoggedIn, user, setUser, Email, setEmail ,Role,setRole} = useContext(CreateContext);
 
     // Persist login state using localStorage
     const [token, setToken] = useState(localStorage.getItem("accessToken") || '');
@@ -27,7 +27,7 @@ export default function Navbar() {
 
     async function handleLogout() {
         try {
-            const res = await axiosInstance.post("http://localhost:3000/logout", {}, 
+            const res = await axiosInstance.post("/logout", {}, 
             {
                 // headers: { 'Authorization': `Bearer ${AccessToken}` }
             })
@@ -39,9 +39,11 @@ export default function Navbar() {
                 localStorage.removeItem("userName");
                 localStorage.removeItem("loginstatus");
                 localStorage.removeItem("email");
+                localStorage.removeItem("role");
                 setUser('');
                 setToken('');
                 setEmail('');
+                setRole('');
                 navigate("/login")
             }
         }
@@ -107,7 +109,7 @@ export default function Navbar() {
                                 <li className="text-white hover:text-indigo-200">
                                     <Link to="/" className="text-black">Home</Link>
                                 </li>
-                                {token && (
+                                {token && Role !== 'admin' &&(
                                     <li className="text-white hover:text-indigo-200">
                                         <Link to="/notes" className="text-black">My Notes</Link>
                                     </li>
@@ -115,6 +117,11 @@ export default function Navbar() {
                                 {token && (
                                     <li className="text-white hover:text-indigo-200">
                                         <Link to="/profile" className="text-black">Profile</Link>
+                                    </li>
+                                )}
+                                {token && Role === 'admin'&&(
+                                    <li className="text-white hover:text-indigo-200">
+                                        <Link to="/admin" className="text-black">Admin</Link>
                                     </li>
                                 )}
                             </ul>

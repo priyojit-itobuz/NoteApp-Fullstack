@@ -20,6 +20,8 @@ export default function Card({ title, content, id, setNotes, notes, pic, fetchNo
 
     const handleFileUpload = async (event) => {
         const file = event.target.files[0];
+        console.log("my filee",file);
+        
         try {
             const formData = new FormData();
             formData.append("pic", file);
@@ -103,6 +105,7 @@ export default function Card({ title, content, id, setNotes, notes, pic, fetchNo
                                 <p className="text-base leading-relaxed text-gray-500 dark:text-gray-400 break-all">
                                     {flag === false ? content : (<img src={`http://localhost:3000/uploads/${localStorage.getItem(`pic/${title}`)}`} alt={pics} />)}
                                 </p>
+                                
                             </div>
                         </Modal.Body>
                         <Modal.Footer>

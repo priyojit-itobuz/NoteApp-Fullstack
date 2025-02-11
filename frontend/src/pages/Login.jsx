@@ -13,7 +13,7 @@ export default function Login() {
         resolver: yupResolver(loginUser),
     });
     const navigate = useNavigate();
-    const { setAccessToken, setRefreshToken, setUser, setEmail, LoggedIn } = useContext(CreateContext);
+    const { setAccessToken, setRefreshToken, setUser, setEmail, LoggedIn, Role, setRole } = useContext(CreateContext);
 
     const handleSignin = async (data) => {
         try {
@@ -21,18 +21,28 @@ export default function Login() {
                 headers: { 'Content-type': 'application/json' },
             })
             if (res.data.success) {
-                const { accessToken, refreshToken, userName, email } = res.data;
+                const { accessToken, refreshToken, userName, email, role } = res.data;
                 localStorage.setItem("accessToken", accessToken);
                 localStorage.setItem("refreshToken", refreshToken);
                 localStorage.setItem("userName", userName);
                 localStorage.setItem("email", email);
+                localStorage.setItem("role", role)
                 setAccessToken(accessToken);
                 setRefreshToken(refreshToken);
                 setUser(userName);
                 setEmail(email);
+                setRole(role);
                 LoggedIn();
                 toast.success("Login Successful");
-                navigate("/notes")
+                if(role === 'admin')
+                {
+                    navigate("/admin");
+                }
+                else
+                {
+                    navigate("/notes")
+                }
+                
             }
         }
         catch (error) {
@@ -41,7 +51,7 @@ export default function Login() {
         }
     }
 
-    
+
 
 
     return (
@@ -87,6 +97,17 @@ export default function Login() {
                                     {errors.password?.message || " "}
                                 </p>
                             </div>
+                            <select
+                                className="custom-select"
+                                id="role"
+                                defaultValue=""
+                                {...register("role")}
+                            >
+                                <option value="" disabled>Select Option</option>
+                                <option value="user">user</option>
+                                <option value="admin">admin</option>
+                            </select>
+                            <p className="text-xs text-red-600 font-semibold min-h-[16px]">{errors.role?.message}</p>
 
                             <p>Don't have an account?
                                 <Link to="/signup" className='text-blue-600 underline'> Sign Up</Link>
