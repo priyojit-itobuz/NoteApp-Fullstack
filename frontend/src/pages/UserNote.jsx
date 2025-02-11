@@ -1,28 +1,36 @@
-import React, { useContext, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import Navbar from '../components/Navbar'
 import { CreateContext } from '../context/myContext';
+import { useParams } from 'react-router-dom';
+import axiosInstance from '../utils/axiosInstance';
+import Card from '../components/Card';
 
 export default function UserNote() {
 
     const { isLoggedIn } = useContext(CreateContext);
     const [notes, setNotes] = useState([]);
+    const params = useParams();
+    const id = params.id;
 
-    async function fetchNotes(page = 1) {
-        try {
-          const res = await axiosInstance.post(
-            `/note/searchSortPaginate?sortField=${sortField}&sortOrder=${sortOrder}&page=${page}&limit=${limit}`,
-            { searchText: debouncedSearchText }
-          );
-    
-          if (res.data.success) {
-            setNotes(res.data.notes);
-            setCurrentPage(res.data.pagination.currentPage);
-            setTotalPages(Math.max(1, res.data.pagination.totalPages));
-          }
-        } catch (error) {
-          console.error("Error fetching notes:", error.message);
-        }
+    useEffect(() => {
+      if (id) {
+        fetchNotes(id);
       }
+    }, [id]);
+
+    async function fetchNotes(id) {
+      try {
+        const res = await axiosInstance.get(`/admin/particularNote/${id}`);
+  
+        if (res.data.success) {
+          setNotes(res.data.data);
+        } else {
+          console.log("No notes found");
+        }
+      } catch (error) {
+        console.error("Error fetching notes:", error.message);
+      }
+    }
 
 
   return (

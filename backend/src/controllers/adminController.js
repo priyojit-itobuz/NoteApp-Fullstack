@@ -31,8 +31,6 @@ export const getAllUser = async (req, res) => {
 
 export const getParticularUserNote = async (req, res) => {
     try {
-      //  checking if desired userId present or note, if present return all the objects that have same userId
-      // const userId = req.body.userId;
       const userId = req.params.id;
   
       const currentUserId = await note.find({ userId });
