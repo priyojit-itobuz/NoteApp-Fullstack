@@ -114,11 +114,19 @@ export default function Navbar() {
                                         <Link to="/notes" className="text-black">My Notes</Link>
                                     </li>
                                 )}
-                                {token && (
+                                {token && (Role === 'user' ?
+                                (
                                     <li className="text-white hover:text-indigo-200">
                                         <Link to="/profile" className="text-black">Profile</Link>
                                     </li>
+                                )
+                                :
+                                (<li className="text-white hover:text-indigo-200">
+                                    <Link to="/admin/profile" className="text-black">Profile</Link>
+                                </li>)
                                 )}
+
+
                                 {token && Role === 'admin'&&(
                                     <li className="text-white hover:text-indigo-200">
                                         <Link to="/admin" className="text-black">Admin</Link>

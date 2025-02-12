@@ -6,7 +6,7 @@ import Login from './pages/Login';
 import VerifyEmail from './pages/VerifyEmail';
 import AddNote from './components/AddNote';
 import EditNote from './pages/EditNote';
-import ProtectedRoute from './middleware/ProtectedRoute'; 
+import ProtectedRoute from './middleware/ProtectedRoute';
 import ModalComponent from './components/Modal';
 import Profile from './pages/Profile';
 import Notes from './pages/Notes';
@@ -24,8 +24,8 @@ function App() {
         <Route path='/verify/:token' element={<VerifyEmail />} />
         <Route path='/login' element={<Login />} />
         <Route path='/modal' element={<ModalComponent />} />
-        <Route path='/admin' element={<Admin/>} />
-        <Route path='/userNote/:id' element={<UserNote/>}/>
+        <Route path='/admin' element={<Admin />} />
+        <Route path='/admin/userNote/:id' element={<UserNote />} />
 
         <Route
           path='/addNote'
@@ -53,6 +53,16 @@ function App() {
             </ProtectedRoute>
           }
         />
+
+        <Route
+          path='/admin/profile'
+          element={
+            <ProtectedRoute>
+              <Profile />
+            </ProtectedRoute>
+          }
+        />
+
         <Route
           path='/edit/:id'
           element={
@@ -61,6 +71,16 @@ function App() {
             </ProtectedRoute>
           }
         />
+
+        <Route
+          path='/admin/edit/:id'
+          element={
+            <ProtectedRoute>
+              <EditNote />
+            </ProtectedRoute>
+          }
+        />
+
       </Routes>
     </>
   );

@@ -57,7 +57,7 @@ export default function Admin() {
                                     {user.email}
                                 </td>
                                 <td className="px-6 py-4 cursor-pointer">
-                                <Link to={`/userNote/${user._id}`}>
+                                <Link to={`/admin/userNote/${user._id}`}>
                                     Click Here
                                 </Link>
                                 </td>

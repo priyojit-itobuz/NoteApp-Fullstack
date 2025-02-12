@@ -7,27 +7,34 @@ import Card from '../components/Card';
 
 export default function UserNote() {
 
-    const { isLoggedIn } = useContext(CreateContext);
+    const { isLoggedIn,nId,setnId } = useContext(CreateContext);
     const [notes, setNotes] = useState([]);
+
     const params = useParams();
     const id = params.id;
 
     useEffect(() => {
       if (id) {
-        fetchNotes(id);
+        localStorage.setItem("noteId",id)
+        setnId(id);
+        fetchUserNotes(id);
       }
     }, [id]);
 
-    async function fetchNotes(id) {
+
+    async function fetchUserNotes(nId) {
+      
       try {
-        const res = await axiosInstance.get(`/admin/particularNote/${id}`);
+        const res = await axiosInstance.get(`/admin/particularNote/${localStorage.getItem("noteId")}`);
   
         if (res.data.success) {
           setNotes(res.data.data);
         } else {
           console.log("No notes found");
+          setNotes([])
         }
       } catch (error) {
+        setNotes([])
         console.error("Error fetching notes:", error.message);
       }
     }
@@ -50,7 +57,7 @@ export default function UserNote() {
                 pic={note.pic}
                 setNotes={setNotes}
                 notes={notes}
-                fetchNotes={fetchNotes}
+                fetchUserNotes={fetchUserNotes}
               />
             ))}
           </div>

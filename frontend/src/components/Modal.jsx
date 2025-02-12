@@ -7,9 +7,12 @@ import { CreateContext } from "../context/myContext";
 import axios from "axios";
 import { toast } from "react-toastify";
 import axiosInstance from "../utils/axiosInstance";
+import { useNavigate } from "react-router-dom";
 
-export default function ModalComponent({ deleteModal, setDeleteModal, notes, setNotes, id,fetchNotes }) {
-  const { AccessToken } = useContext(CreateContext);
+export default function ModalComponent({ deleteModal, setDeleteModal, notes, setNotes, id,fetchNotes ,fetchUserNotes}) {
+  const { AccessToken,Role,setRole } = useContext(CreateContext);
+
+  const navigate = useNavigate();
 
   // Delete note function
 
@@ -28,7 +31,15 @@ export default function ModalComponent({ deleteModal, setDeleteModal, notes, set
       if (res.data.success) {
         toast.success("Note deleted successfully.");
         setDeleteModal(false); // Close the modal
-        fetchNotes(); // Refetch updated notes
+        if(Role === 'user')
+        {
+          fetchNotes(); // Refetch updated notes
+        }
+        else
+        {
+          // navigate("/admin")
+          fetchUserNotes();
+        }
       } else {
         toast.error("Failed to delete the note.");
       }

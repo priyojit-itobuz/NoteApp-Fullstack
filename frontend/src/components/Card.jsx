@@ -10,8 +10,8 @@ import ModalComponent from './Modal';
 import { Button, Modal } from "flowbite-react";
 import axiosInstance from '../utils/axiosInstance';
 
-export default function Card({ title, content, id, setNotes, notes, pic, fetchNotes }) {
-    const { AccessToken } = useContext(CreateContext);
+export default function Card({ title, content, id, setNotes, notes, pic, fetchNotes ,fetchUserNotes}) {
+    const { AccessToken, Role, setRole } = useContext(CreateContext);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [deleteModal, setDeleteModal] = useState(false);
     const [flag, setFlag] = useState(false);
@@ -20,8 +20,8 @@ export default function Card({ title, content, id, setNotes, notes, pic, fetchNo
 
     const handleFileUpload = async (event) => {
         const file = event.target.files[0];
-        console.log("my filee",file);
-        
+        console.log("my filee", file);
+
         try {
             const formData = new FormData();
             formData.append("pic", file);
@@ -56,16 +56,19 @@ export default function Card({ title, content, id, setNotes, notes, pic, fetchNo
                             {title}
                         </h2>
                         <div className="flex gap-4">
-                            <Link to={`/edit/${id}`}>
+                            {Role === 'user' ? (<Link to={`/edit/${id}`}>
                                 <GrEdit className="text-white hover:text-gray-300" size={20} />
-                            </Link>
+                            </Link>) : (<Link to={`/admin/edit/${id}`}>
+                                <GrEdit className="text-white hover:text-gray-300" size={20} />
+                            </Link>)}
+
                             <MdDelete
                                 className="text-white hover:text-red-500 cursor-pointer"
                                 size={20}
                                 onClick={() => setDeleteModal(true)}
                             />
                             <FaFileUpload className="text-white hover:text-gray-300" size={20} onClick={handleUpload} />
-                            
+
 
                         </div>
                     </div>
@@ -105,7 +108,7 @@ export default function Card({ title, content, id, setNotes, notes, pic, fetchNo
                                 <p className="text-base leading-relaxed text-gray-500 dark:text-gray-400 break-all">
                                     {flag === false ? content : (<img src={`http://localhost:3000/uploads/${localStorage.getItem(`pic/${title}`)}`} alt={pics} />)}
                                 </p>
-                                
+
                             </div>
                         </Modal.Body>
                         <Modal.Footer>
@@ -120,7 +123,7 @@ export default function Card({ title, content, id, setNotes, notes, pic, fetchNo
             )}
 
 
-            {deleteModal && (<ModalComponent deleteModal={deleteModal} setDeleteModal={setDeleteModal} id={id} notes={notes} setNotes={setNotes} fetchNotes={fetchNotes} />)}
+            {deleteModal && (<ModalComponent deleteModal={deleteModal} setDeleteModal={setDeleteModal} id={id} notes={notes} setNotes={setNotes} fetchNotes={fetchNotes} fetchUserNotes={fetchUserNotes}/>)}
         </>
     );
 }

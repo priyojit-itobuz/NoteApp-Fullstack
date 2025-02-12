@@ -11,6 +11,7 @@ export const CreateContextProvider = (props) => {
   const [profile,setProfile] = useState(localStorage.getItem("profilePic") || '');
   const [Role,setRole] = useState(localStorage.getItem("role") || '')
   const [verified,isVerified] = useState(false);
+  const [ nId,setnId] = useState(localStorage.getItem("noteId")||"");
 
   useEffect(() => {
     localStorage.setItem("loginstatus", isLoggedIn);
@@ -27,16 +28,18 @@ export const CreateContextProvider = (props) => {
     setUser('');
     setProfile('')
     setRole('');
+    setnId('');
     localStorage.removeItem("loginstatus");
     localStorage.removeItem("accessToken"); 
     localStorage.removeItem("refreshToken");
     localStorage.removeItem("userName");
     localStorage.removeItem("profilePic");
     localStorage.removeItem("role");
+    localStorage.removeItem("noteId")
   };
 
   return (
-    <CreateContext.Provider value={{ isLoggedIn, setLoggedIn, LoggedIn, Logout, AccessToken, setAccessToken, RefreshToken, setRefreshToken, user, setUser,Email,setEmail,profile,setProfile,verified,isVerified,Role,setRole }}>
+    <CreateContext.Provider value={{ isLoggedIn, setLoggedIn, LoggedIn, Logout, AccessToken, setAccessToken, RefreshToken, setRefreshToken, user, setUser,Email,setEmail,profile,setProfile,verified,isVerified,Role,setRole,nId,setnId }}>
       {props.children}
     </CreateContext.Provider>
   );

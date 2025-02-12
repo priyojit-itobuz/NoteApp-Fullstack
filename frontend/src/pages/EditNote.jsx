@@ -14,7 +14,7 @@ export default function EditNote() {
         resolver: yupResolver(noteValidation),
     });
 
-    const { AccessToken } = useContext(CreateContext);
+    const { AccessToken,Role,setRole } = useContext(CreateContext);
     const navigate = useNavigate();
     const { id } = useParams(); 
 
@@ -43,19 +43,39 @@ export default function EditNote() {
     
 
     const handleEditNote = async (data) => {
-        try {
-            const res = await axiosInstance.put(`/note/updateNote/${id}`, data, {
-                // headers: { 'Authorization': `Bearer ${AccessToken}` }
-            });
-
-            if (res.data.success) {
-                toast.success("Note updated successfully!");
-                navigate('/notes');
+        if(Role === 'user')
+        {
+            try {
+                const res = await axiosInstance.put(`/note/updateNote/${id}`, data, {
+                    // headers: { 'Authorization': `Bearer ${AccessToken}` }
+                });
+    
+                if (res.data.success) {
+                    toast.success("Note updated successfully!");
+                    navigate('/notes');
+                }
+            } catch (error) {
+                toast.error(error.response?.data?.message || "Failed to update note");
+                console.error("Error updating note:", error.message);
             }
-        } catch (error) {
-            toast.error(error.response?.data?.message || "Failed to update note");
-            console.error("Error updating note:", error.message);
         }
+        else
+        {
+            try {
+                const res = await axiosInstance.put(`/admin/updateNote/${id}`, data, {
+                    // headers: { 'Authorization': `Bearer ${AccessToken}` }
+                });
+    
+                if (res.data.success) {
+                    toast.success("Note updated successfully!");
+                    navigate('/admin');
+                }
+            } catch (error) {
+                toast.error(error.response?.data?.message || "Failed to update note");
+                console.error("Error updating note:", error.message);
+            }
+        }
+
     };
 
     return (
