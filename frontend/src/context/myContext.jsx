@@ -8,7 +8,9 @@ export const CreateContextProvider = (props) => {
   const [RefreshToken, setRefreshToken] = useState(localStorage.getItem("refreshToken") || '');
   const [user, setUser] = useState(localStorage.getItem("userName") || '');
   const [Email, setEmail] = useState(localStorage.getItem("email") || '');
+
   const [profile,setProfile] = useState(localStorage.getItem("profilePic") || '');
+  
   const [Role,setRole] = useState(localStorage.getItem("role") || '')
   const [verified,isVerified] = useState(false);
   const [ nId,setnId] = useState(localStorage.getItem("noteId")||"");

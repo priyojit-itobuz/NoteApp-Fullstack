@@ -37,6 +37,15 @@ function App() {
         />
 
         <Route
+          path='/admin/addNote/:id'
+          element={
+            <ProtectedRoute>
+              <AddNote />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
           path='/notes'
           element={
             <ProtectedRoute>

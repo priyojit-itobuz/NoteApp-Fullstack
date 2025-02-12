@@ -7,6 +7,7 @@ import { CreateContext } from '../context/myContext';
 import axios from 'axios';
 import { toast } from 'react-toastify';
 import axiosInstance from '../utils/axiosInstance';
+import { useParams } from 'react-router-dom';
 
 export default function AddNote() {
 
@@ -14,29 +15,55 @@ export default function AddNote() {
         resolver: yupResolver(noteValidation),
     });
 
-    const { isLoggedIn, Logout, AccessToken ,user,setUser} = useContext(CreateContext);
+    const params = useParams();
+    const id = params.id;
+    const { isLoggedIn, Logout, AccessToken ,user,setUser,Role} = useContext(CreateContext);
 
     // console.log("THIS IS ADDNOTE",isLoggedIn);
     
 
     // const token = AccessToken;
     const handleAddNote = async (data, e) => {
-        try {
-            console.log(data);
-            // e.target.reset();
-            const res = await axiosInstance.post("/note/addNote", data, {
-                // headers: {'Authorization': `Bearer ${AccessToken}`}
-            })
-            if(res.data.success) {
-                console.log(res.data)
-                toast.success("Note Added SuccessFully");
-                e.target.reset()
+        if(Role === 'user')
+        {
+            try {
+                console.log(data);
+                // e.target.reset();
+                const res = await axiosInstance.post("/note/addNote", data, {
+                    // headers: {'Authorization': `Bearer ${AccessToken}`}
+                })
+                if(res.data.success) {
+                    console.log(res.data)
+                    toast.success("Note Added SuccessFully");
+                    e.target.reset()
+                }
+            }
+    
+            catch (error) {
+                toast.error(error.response.data.message)
+                console.log(error.message);
             }
         }
-
-        catch (error) {
-            toast.error(error.response.data.message)
-            console.log(error.message);
+        else
+        {
+            //fix
+            try {
+                console.log(data);
+                // e.target.reset();
+                const res = await axiosInstance.post(`/admin/addNote/${id}`, data, {
+                    // headers: {'Authorization': `Bearer ${AccessToken}`}
+                })
+                if(res.data.success) {
+                    console.log(res.data)
+                    toast.success("Note Added SuccessFully");
+                    e.target.reset()
+                }
+            }
+    
+            catch (error) {
+                toast.error(error.response.data.message)
+                console.log(error.message);
+            }
         }
     }
 

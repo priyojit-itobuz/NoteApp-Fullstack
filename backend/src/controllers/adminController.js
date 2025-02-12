@@ -28,7 +28,6 @@ export const getAllUser = async (req, res) => {
 };
 
 //fetch notes based on userId
-
 export const getParticularUserNote = async (req, res) => {
   try {
     const userId = req.params.id;
@@ -121,3 +120,36 @@ export const deleteNote = async (req, res) => {
     });
   }
 };
+
+
+// admin add Note
+export const addNoteAdmin = async(req,res) => {
+  try {
+    const userId = req.params.id;
+    const { title, content } = req.body;
+    const findTitle = await note.findOne({ userId, title });
+    if (findTitle) {
+      return res.status(400).json({
+        success: false,
+        message: "Note Title already exists",
+      });
+    }
+
+    const response = await note.create({ title, content, userId });
+
+    if (response) {
+      res.status(200).json({
+        success: true,
+        data: response,
+        message: "Note Created Success",
+      });
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      success: false,
+      data: "server error",
+      message: error.message,
+    });
+  }
+}
