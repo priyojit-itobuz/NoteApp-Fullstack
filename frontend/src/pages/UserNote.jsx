@@ -57,7 +57,7 @@ export default function UserNote() {
           <Button color="failure" className='mt-16' onClick={() => {
             setDeleteModal(true);
             setFlag(true);
-          }}>Delete All</Button>
+          }}>Delete All Notes</Button>
 
           <div
             className="w-fit p-3 flex justify-center mt-8 gap-3 items-center border border-black my-2 rounded-full dark:border-gray-200 dark:text-black md:mt-16 cursor-pointer hover:bg-slate-200"

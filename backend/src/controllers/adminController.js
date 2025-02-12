@@ -183,3 +183,37 @@ export const deleteAllNotes = async(req,res) => {
     
   }
 }
+
+export const deleteUser = async(req,res) => {
+  try {
+    const id = req.params.id;
+    console.log(id);
+    
+    const findUser = await user.find({_id:id});
+    console.log("myuSER",findUser);
+    if(findUser)
+    {
+      await note.deleteMany({userId:id})
+      await user.deleteOne({_id:id});
+      return res.status(200).json({
+        success : true,
+        message : "User deleted Success"
+      })
+    }
+    else
+    {
+      return res.status(404).json({
+        success : false,
+        message : "No user to Delete"
+      })
+    }
+
+  } catch (error) {
+    console.log("error");
+    return res.status(500).json({
+      success : false,
+      message : error.message
+    })
+    
+  }
+}
