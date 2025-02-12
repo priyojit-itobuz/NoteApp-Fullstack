@@ -153,3 +153,33 @@ export const addNoteAdmin = async(req,res) => {
     });
   }
 }
+
+export const deleteAllNotes = async(req,res) => {
+  try {
+    const userId = req.params.id;
+    const findNotes = await note.find({userId}); 
+    if(findNotes.length === 0)
+    {
+      return res.status(404).json({
+        success : false,
+        message : "No Notes Left to Delete"
+       })
+    }
+    else
+    {
+       const deleteAll = await note.deleteMany({userId})
+       return res.status(200).json({
+        success : true,
+        message : "All Notes Deleted"
+       })
+    }
+
+  } catch (error) {
+    console.log(error.message);
+    return res.status(500).json({
+      success : false,
+      message : error.message
+    })
+    
+  }
+}

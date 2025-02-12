@@ -1,6 +1,6 @@
 import express from "express"
 import { isLoggedIn } from "../middlewares/loginStatus.js";
-import { addNoteAdmin, deleteNote, getAllUser, getParticularUserNote, updateNote } from "../controllers/adminController.js";
+import { addNoteAdmin, deleteAllNotes, deleteNote, getAllUser, getParticularUserNote, updateNote } from "../controllers/adminController.js";
 
 
 const route = express.Router();
@@ -10,5 +10,6 @@ route.get("/allUser",isLoggedIn,getAllUser)
 route.get("/particularNote/:id",isLoggedIn,getParticularUserNote)
 route.put("/updateNote/:id",isLoggedIn,updateNote)
 route.delete("/deleteNote/:id",isLoggedIn,deleteNote)
+route.delete("/deleteAll/:id",isLoggedIn,deleteAllNotes)
 
 export default route;
