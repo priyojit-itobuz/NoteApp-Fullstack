@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React from 'react'
 import { yupResolver } from "@hookform/resolvers/yup";
 import { signupUser } from '../validation/userValidation';
 import { useForm } from 'react-hook-form';
@@ -11,13 +11,8 @@ export default function Signup() {
         resolver: yupResolver(signupUser),
     });
 
-
-
-
     const handleRegistration = async (data, e) => {
         try {
-            console.log("my data", data);
-
             const res = await axios.post("http://localhost:3000/register", data, {
                 headers: { 'Content-type': 'application/json' },
             });
@@ -70,17 +65,6 @@ export default function Signup() {
                             />
                             <p className="text-xs text-red-600 font-semibold min-h-[16px]">{errors.password?.message}</p>
                         </div>
-                        {/* <select
-                            className="custom-select"
-                            id="role"
-                            defaultValue=""
-                            {...register("role")}
-                        >
-                            <option value="" disabled>Select Option</option>
-                            <option value="user">user</option>
-                            <option value="admin">admin</option>
-                        </select>
-                        <p className="text-xs text-red-600 font-semibold min-h-[16px]">{errors.role?.message}</p> */}
                         <p>
                             Already have an account? <Link to="/login" className="text-blue-500 underline">Login</Link>
                         </p>

@@ -8,6 +8,7 @@ export const CreateContextProvider = (props) => {
   const [RefreshToken, setRefreshToken] = useState(localStorage.getItem("refreshToken") || '');
   const [user, setUser] = useState(localStorage.getItem("userName") || '');
   const [Email, setEmail] = useState(localStorage.getItem("email") || '');
+  const [uId,setuId] = useState('');
 
   const [profile,setProfile] = useState(localStorage.getItem("profilePic") || '');
   
@@ -41,7 +42,7 @@ export const CreateContextProvider = (props) => {
   };
 
   return (
-    <CreateContext.Provider value={{ isLoggedIn, setLoggedIn, LoggedIn, Logout, AccessToken, setAccessToken, RefreshToken, setRefreshToken, user, setUser,Email,setEmail,profile,setProfile,verified,isVerified,Role,setRole,nId,setnId }}>
+    <CreateContext.Provider value={{ isLoggedIn, setLoggedIn, LoggedIn, Logout, AccessToken, setAccessToken, RefreshToken, setRefreshToken, user, setUser,Email,setEmail,profile,setProfile,verified,isVerified,Role,setRole,nId,setnId,uId,setuId }}>
       {props.children}
     </CreateContext.Provider>
   );

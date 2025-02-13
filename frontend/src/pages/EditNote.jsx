@@ -4,7 +4,6 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { noteValidation } from '../validation/userValidation';
 import { useForm } from 'react-hook-form';
 import { useNavigate, useParams } from 'react-router-dom';
-import axios from 'axios';
 import { CreateContext } from '../context/myContext';
 import { toast } from 'react-toastify';
 import axiosInstance from '../utils/axiosInstance';
@@ -14,9 +13,9 @@ export default function EditNote() {
         resolver: yupResolver(noteValidation),
     });
 
-    const { AccessToken,Role,setRole } = useContext(CreateContext);
+    const { AccessToken } = useContext(CreateContext);
     const navigate = useNavigate();
-    const { id } = useParams(); 
+    const { id } = useParams();
 
     useEffect(() => {
         const getNote = async () => {
@@ -28,7 +27,7 @@ export default function EditNote() {
                 if (res.data.success) {
                     const { title, content } = res.data.particularNote;
                     //set value is form hook method
-                    setValue('title', title); // Update form values dynamically
+                    setValue('title', title);
                     setValue('content', content);
                 }
             } catch (error) {
@@ -39,43 +38,22 @@ export default function EditNote() {
         if (id && AccessToken) {
             getNote();
         }
-    }, [id, AccessToken, setValue]); 
-    
+    }, [id, AccessToken, setValue]);
+
 
     const handleEditNote = async (data) => {
-        // if(Role === 'user')
-        // {
-            try {
-                const res = await axiosInstance.put(`/note/updateNote/${id}`, data, {
-                    // headers: { 'Authorization': `Bearer ${AccessToken}` }
-                });
-    
-                if (res.data.success) {
-                    toast.success("Note updated successfully!");
-                    navigate('/notes');
-                }
-            } catch (error) {
-                toast.error(error.response?.data?.message || "Failed to update note");
-                console.error("Error updating note:", error.message);
-            }
-        // }
-        // else
-        // {
-        //     try {
-        //         const res = await axiosInstance.put(`/admin/updateNote/${id}`, data, {
-        //             // headers: { 'Authorization': `Bearer ${AccessToken}` }
-        //         });
-    
-        //         if (res.data.success) {
-        //             toast.success("Note updated successfully!");
-        //             navigate('/admin');
-        //         }
-        //     } catch (error) {
-        //         toast.error(error.response?.data?.message || "Failed to update note");
-        //         console.error("Error updating note:", error.message);
-        //     }
-        // }
+        try {
+            const res = await axiosInstance.put(`/note/updateNote/${id}`, data, {
+            });
 
+            if (res.data.success) {
+                toast.success("Note updated successfully!");
+                navigate('/notes');
+            }
+        } catch (error) {
+            toast.error(error.response?.data?.message || "Failed to update note");
+            console.error("Error updating note:", error.message);
+        }
     };
 
     return (

@@ -19,10 +19,6 @@ const noteModel = new mongoose.Schema({
     ref: user,
     required : true
   },
-  // author : {
-  //   type: String,
-  //   default : "",
-  // }
 });
 
 export default mongoose.model("note", noteModel);

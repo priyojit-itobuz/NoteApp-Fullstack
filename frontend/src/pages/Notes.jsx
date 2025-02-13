@@ -8,7 +8,7 @@ import axiosInstance from '../utils/axiosInstance';
 
 export default function Notes() {
   const navigate = useNavigate();
-  const { isLoggedIn } = useContext(CreateContext);
+  const { isLoggedIn, Role } = useContext(CreateContext);
 
   const [notes, setNotes] = useState([]);
   const [searchText, setSearchText] = useState("");
@@ -70,13 +70,17 @@ export default function Notes() {
       <Navbar />
       <div className="flex justify-between items-center">
         <h1 className="mt-7 text-2xl font-semibold md:text-3xl md:mt-16">All Notes</h1>
-        <div
+
+
+        {Role === 'user' ? (<div
           className="w-fit p-3 flex justify-center mt-8 gap-3 items-center border border-black my-2 rounded-full dark:border-gray-200 dark:text-black md:mt-16 cursor-pointer hover:bg-slate-200"
-          onClick={() => navigate("/addNote")}
-        >
+          onClick={() => navigate("/addNote")}>
           <IoAddCircleSharp size={30} />
           <h5 className="text-xl font-medium">Add Note</h5>
-        </div>
+        </div>):(<></>)}
+        
+
+
       </div>
 
       {/* Search Bar */}
@@ -115,7 +119,7 @@ export default function Notes() {
             {notes.map((note) => (
               <Card
                 title={note.title}
-                userName = {note.userId.userName}
+                userName={note.userId.userName}
                 content={note.content}
                 key={note._id}
                 id={note._id}

@@ -4,10 +4,9 @@ import user from "../models/userModel.js";
 // add note based on usedId
 export const addNote = async (req, res) => {
   try {
-    const userId = req.body.userId;
+    const userId = req.body.userId
     const { title, content } = req.body;
     const findTitle = await note.findOne({ userId, title });
-    // console.log("my note",findTitle);
 
     if (findTitle) {
       return res.status(400).json({
@@ -15,9 +14,6 @@ export const addNote = async (req, res) => {
         message: "Note Title already exists",
       });
     }
-
-    // const uName = await user.findById(userId)
-    // console.log("my user name",uName);
 
     const response = await note.create({ title, content, userId });
 
@@ -286,7 +282,6 @@ export const searchSortPaginateNotes = async (req, res) => {
   try {
     const userId = req.body.userId;
     const role = req.body.role;
-    console.log("my role", role);
 
     if (role === "user") {
       const { searchText } = req.body;
@@ -319,10 +314,7 @@ export const searchSortPaginateNotes = async (req, res) => {
         .limit(limit)
         .populate("userId");
 
-      console.log("notee", notes);
-
       const totalNotes = await note.countDocuments(filter); // Total notes for pagination info
-      // console.log("tt",totalNotes);
 
       return res.status(200).json({
         success: true,
@@ -339,7 +331,7 @@ export const searchSortPaginateNotes = async (req, res) => {
     else
     {
       const { searchText } = req.body;
-      const sortField = req.query.sortField || "title"; // Default sort field
+      const sortField = req.query.sortField || "title" ; // Default sort field
       const sortOrder = req.query.sortOrder === "asc" ? 1 : -1; // Default to descending
       const page = parseInt(req.query.page) || 1; // Default page = 1
       const limit = parseInt(req.query.limit) || 5; // Default limit = 10
@@ -368,10 +360,8 @@ export const searchSortPaginateNotes = async (req, res) => {
         .limit(limit)
         .populate("userId");
 
-      console.log("notee", notes);
 
       const totalNotes = await note.countDocuments(filter); // Total notes for pagination info
-      // console.log("tt",totalNotes);
 
       return res.status(200).json({
         success: true,

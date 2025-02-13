@@ -1,6 +1,4 @@
-import express from 'express'
 import dbConnect from '../config/dbConnection.js';
-import dotenv from "dotenv/config";
 import user from '../models/userModel.js';
 import note from '../models/noteModel.js';
 import session from '../models/sessionModel.js';

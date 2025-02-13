@@ -1,13 +1,7 @@
 import nodemailer from "nodemailer";
 import hbs from 'nodemailer-express-handlebars'
 
-console.log(process.env.FRONTEND_PORT);
-
-
 export const mailSender = async (email,token) => {
-  
-  console.log("mail",email);
-  
     const transporter = nodemailer.createTransport({
       service: "gmail",
       auth: {
@@ -47,7 +41,6 @@ export const mailSender = async (email,token) => {
       }
       else {
         console.log("Email sent successfully");
-        console.log(res);
       }
     });
   };

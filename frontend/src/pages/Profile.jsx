@@ -3,7 +3,6 @@ import { CreateContext } from '../context/myContext';
 import Navbar from '../components/Navbar';
 import { Button, Modal, Label, TextInput } from 'flowbite-react';
 import { useForm } from 'react-hook-form';
-import axios from 'axios';
 import { toast } from 'react-toastify';
 import axiosInstance from '../utils/axiosInstance';
 import userProfile from '../assets/userProfile.png'
@@ -11,10 +10,10 @@ import userProfile from '../assets/userProfile.png'
 
 export default function Profile() {
     const [isModalOpen, setIsModalOpen] = useState(false);
-    const [picModal,setpicModal] = useState(false);
-    const [profile,setProfile] = useState('');
+    const [picModal, setpicModal] = useState(false);
+    const [profile, setProfile] = useState('');
 
-    const { register, handleSubmit, setValue } = useForm({});
+    const { register, handleSubmit } = useForm({});
 
     const { AccessToken, setUser, user, Email } = useContext(CreateContext);
 
@@ -25,13 +24,12 @@ export default function Profile() {
     const handleEditNote = async (data) => {
         try {
             const res = await axiosInstance.post(`/changeUserName`, data, {
-                // headers: { 'Authorization': `Bearer ${AccessToken}` }
             });
 
             if (res.data.success) {
                 const userName = res.data.message.userName;
-                console.log("my name",userName);
-                
+                console.log("my name", userName);
+
                 localStorage.setItem("userName", userName);
                 setUser(userName)
                 toast.success("UserName Updated Success");
@@ -44,28 +42,26 @@ export default function Profile() {
         }
     };
 
-    useEffect(()=>{
-        async function getUser()
-        {   
+    useEffect(() => {
+        async function getUser() {
             try {
-                const res = await axiosInstance.get("http://localhost:3000/getUser",  {
-                    //  headers: { 'Authorization': `Bearer ${AccessToken}`, 'Content-Type': 'application/json' } 
+                const res = await axiosInstance.get("http://localhost:3000/getUser", {
                 });
-    
+
                 if (res.data.success) {
-                    console.log("total data",res.data);
-                    
-                    console.log("getUser",res.data.searchUser.profilePic);
+                    console.log("total data", res.data);
+
+                    console.log("getUser", res.data.searchUser.profilePic);
                     setProfile(res.data.searchUser.profilePic)
                 }
             } catch (error) {
                 console.log(error);
-                
+
                 toast.error(error.response?.data?.error || "Something went wrong");
             }
         }
         getUser();
-    },[])
+    }, [])
 
     const handleFileUpload = async (event) => {
         const file = event.target.files[0];
@@ -73,12 +69,7 @@ export default function Profile() {
             const formData = new FormData();
             formData.append("profilePic", file);
             const res = await axiosInstance.post(`changeProfilePic`, formData, { headers: { 'Authorization': `Bearer ${AccessToken}`, "Content-Type": "multipart/form-data" } });
-            console.log("res", res);
-
-
             if (res.data.success) {
-                console.log("myfile", res.data);
-                console.log("img", res.data.data);
                 setProfile(`http://localhost:3000/uploads/${res.data.data}`)
                 toast.success("File uploaded successfully!");
             }
@@ -95,7 +86,7 @@ export default function Profile() {
                 <div className="flex flex-col md:flex-row">
                     <div className="md:w-1/3 text-center mb-8 md:mb-0">
                         <img
-                            src={!profile?userProfile:profile}
+                            src={!profile ? userProfile : profile}
                             alt="Profile Picture"
                             className="rounded-full w-48 h-48 mx-auto mb-4 border-4 border-indigo-800 transition-transform duration-300 hover:scale-105 ring ring-gray-300"
                         />
@@ -201,7 +192,7 @@ export default function Profile() {
                         <Modal.Header>Upload Profile Picture</Modal.Header>
                         <Modal.Body>
                             <div className="space-y-6 p-6">
-                                <p><input type='file' accept=".png, .jpg, .jpeg, .txt"  onChange={handleFileUpload} /> </p>
+                                <p><input type='file' accept=".png, .jpg, .jpeg, .txt" onChange={handleFileUpload} /> </p>
                             </div>
                         </Modal.Body>
                         <Modal.Footer>

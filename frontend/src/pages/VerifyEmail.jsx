@@ -11,7 +11,6 @@ const VerifyEmail = () => {
     useEffect(() => {
         const verify = async () => {
             try {
-                console.log("Verifying token:", token);
                 const res = await fetch(`http://localhost:3000/verify/${token}`, {
                     method: "POST",
                     headers: {
@@ -21,12 +20,7 @@ const VerifyEmail = () => {
                 });
 
                 const jsonData = await res.json();
-                console.log("jsondata",jsonData);
-                console.log("ok",res.ok);
-                console.log("okkk",jsonData.success);
-                
-                
-
+                   
                 if (jsonData.success) {
                     setFlag(true)
                     setMessage(jsonData.message || "Email verified successfully! You can Login now.");

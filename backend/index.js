@@ -3,7 +3,7 @@ import dbConnect from "./src/config/dbConnection.js";
 import dotenv from "dotenv/config";
 import route from "./src/routes/userRoute.js";
 import routes from "./src/routes/noteRoute.js";
-// import adminRoute from './src/routes/adminRoute.js'
+import adminRoute from './src/routes/adminRoute.js'
 import fs from "fs";
 import cors from "cors";
 
@@ -27,7 +27,7 @@ if (!fs.existsSync(dir)) {
 
 app.use("/", route);
 app.use("/note", routes);
-// app.use('/admin',adminRoute)
+app.use('/admin',adminRoute)
 
 // to use static files (uploads is my folder which has static files)
 app.use("/uploads", express.static("uploads"));

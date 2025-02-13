@@ -2,14 +2,13 @@ import React, { useContext, useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { CreateContext } from '../context/myContext';
 import { toast } from 'react-toastify';
-import axios from 'axios';
 import axiosInstance from '../utils/axiosInstance';
 
 
 
 export default function Navbar() {
     const [navbar, setNavbar] = useState(false);
-    const { isLoggedIn, Logout, AccessToken, setLoggedIn, user, setUser, Email, setEmail, Role, setRole } = useContext(CreateContext);
+    const { isLoggedIn, Logout, AccessToken, user, setUser, setEmail, Role, setRole } = useContext(CreateContext);
 
     // Persist login state using localStorage
     const [token, setToken] = useState(localStorage.getItem("accessToken") || '');
@@ -29,7 +28,6 @@ export default function Navbar() {
         try {
             const res = await axiosInstance.post("/logout", {},
                 {
-                    // headers: { 'Authorization': `Bearer ${AccessToken}` }
                 })
             if (res.data.success) {
                 console.log(res.data.message)
@@ -121,24 +119,15 @@ export default function Navbar() {
                                     </li>
                                 )}
 
-                                {/* {token && (Role === 'user' ?
+                                {token && (Role === 'admin' ?
                                     (
                                         <li className="text-white hover:text-indigo-200">
-                                            <Link to="/profile" className="text-black">Profile</Link>
+                                            <Link to="/admin" className="text-black">Admin</Link>
                                         </li>
                                     )
                                     :
-                                    (<li className="text-white hover:text-indigo-200">
-                                        <Link to="/admin/profile" className="text-black">Profile</Link>
-                                    </li>)
-                                )} */}
-
-
-                                {/* {token && Role === 'admin'&&(
-                                    <li className="text-white hover:text-indigo-200">
-                                        <Link to="/admin" className="text-black">Admin</Link>
-                                    </li>
-                                )} */}
+                                    (<></>)
+                                )}
                             </ul>
 
                             {/* For Mobile */}
@@ -207,5 +196,3 @@ export default function Navbar() {
         </>
     );
 }
-
-

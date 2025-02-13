@@ -4,14 +4,13 @@ import { GrEdit } from "react-icons/gr";
 import { MdDelete } from "react-icons/md";
 import { FaFileUpload } from "react-icons/fa";
 import { toast } from 'react-toastify';
-import axios from 'axios';
 import { CreateContext } from '../context/myContext';
 import ModalComponent from './Modal';
 import { Button, Modal } from "flowbite-react";
 import axiosInstance from '../utils/axiosInstance';
 
 export default function Card({ title, content, id, setNotes, notes, pic, userName,fetchNotes }) {
-    const { AccessToken, Role, setRole } = useContext(CreateContext);
+    const { AccessToken, Role } = useContext(CreateContext);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [deleteModal, setDeleteModal] = useState(false);
     const [flag, setFlag] = useState(false);
@@ -20,18 +19,12 @@ export default function Card({ title, content, id, setNotes, notes, pic, userNam
 
     const handleFileUpload = async (event) => {
         const file = event.target.files[0];
-        console.log("my filee", file);
-
         try {
             const formData = new FormData();
             formData.append("pic", file);
             const res = await axiosInstance.post(`/note/pic/${id}`, formData, { headers: { 'Authorization': `Bearer ${AccessToken}`, "Content-Type": "multipart/form-data" } });
-            console.log("res", res);
-
 
             if (res.data.success) {
-                console.log("myfile", res.data);
-                console.log("img", res.data.data);
                 setPics(res.data.data)
                 localStorage.setItem(`pic/${title}`, res.data.data)
                 toast.success("File uploaded successfully!");
@@ -73,9 +66,7 @@ export default function Card({ title, content, id, setNotes, notes, pic, userNam
 
                     <div className="flex-grow flex items-center justify-center">
                         <p className="text-center text-xl text-white dark:text-gray-300 line-clamp-3 overflow-hidden">
-                            {/* {content} */}
                             {content.length > 22 ? content.substring(0, 22) + "..." : content}
-                            {/* {content.substring(0, 22) + "..."} */}
                         </p>
                     </div>
 
@@ -95,16 +86,6 @@ export default function Card({ title, content, id, setNotes, notes, pic, userNam
                             View Note
                         </button>
                     </div>)}
-
-                    {/* <div className="flex justify-between">
-                        <p className='text-sm'>Author: {userName}</p>
-                        <button
-                            onClick={() => setIsModalOpen(true)}
-                            className="text-sm text-black dark:text-white font-medium hover:text-blue-600"
-                        >
-                            View Note
-                        </button>
-                    </div> */}
                 </div>
             </div>
 
@@ -143,6 +124,3 @@ export default function Card({ title, content, id, setNotes, notes, pic, userNam
         </>
     );
 }
-
-
-
