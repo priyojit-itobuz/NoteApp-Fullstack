@@ -34,14 +34,14 @@ export default function Login() {
                 setRole(role);
                 LoggedIn();
                 toast.success("Login Successful");
-                if(role === 'admin')
-                {
-                    navigate("/admin");
-                }
-                else
-                {
+                // if(role === 'admin')
+                // {
+                //     navigate("/admin");
+                // }
+                // else
+                // {
                     navigate("/notes")
-                }
+                // }
                 
             }
         }
@@ -97,7 +97,7 @@ export default function Login() {
                                     {errors.password?.message || " "}
                                 </p>
                             </div>
-                            <select
+                            {/* <select
                                 className="custom-select"
                                 id="role"
                                 defaultValue=""
@@ -107,7 +107,7 @@ export default function Login() {
                                 <option value="user">user</option>
                                 <option value="admin">admin</option>
                             </select>
-                            <p className="text-xs text-red-600 font-semibold min-h-[16px]">{errors.role?.message}</p>
+                            <p className="text-xs text-red-600 font-semibold min-h-[16px]">{errors.role?.message}</p> */}
 
                             <p>Don't have an account?
                                 <Link to="/signup" className='text-blue-600 underline'> Sign Up</Link>

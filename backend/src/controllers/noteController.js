@@ -7,12 +7,17 @@ export const addNote = async (req, res) => {
     const userId = req.body.userId;
     const { title, content } = req.body;
     const findTitle = await note.findOne({ userId, title });
+    // console.log("my note",findTitle);
+
     if (findTitle) {
       return res.status(400).json({
         success: false,
         message: "Note Title already exists",
       });
     }
+
+    // const uName = await user.findById(userId)
+    // console.log("my user name",uName);
 
     const response = await note.create({ title, content, userId });
 
@@ -38,7 +43,7 @@ export const addNote = async (req, res) => {
 export const getAllNote = async (req, res) => {
   try {
     const notes = await note.find({});
-    
+
     if (notes) {
       res.status(200).json({
         success: true,
@@ -280,47 +285,106 @@ export const sortNotes = async (req, res) => {
 export const searchSortPaginateNotes = async (req, res) => {
   try {
     const userId = req.body.userId;
-    const { searchText } = req.body;
-    const sortField = req.query.sortField || "title";  // Default sort field
-    const sortOrder = req.query.sortOrder === "asc" ? 1 : -1;  // Default to descending
-    const page = parseInt(req.query.page) || 1;  // Default page = 1
-    const limit = parseInt(req.query.limit) || 5;  // Default limit = 10
+    const role = req.body.role;
+    console.log("my role", role);
 
-    if (!userId) {
-      return res.status(400).json({
-        success: false,
-        message: "userId is required.",
+    if (role === "user") {
+      const { searchText } = req.body;
+      const sortField = req.query.sortField || "title"; // Default sort field
+      const sortOrder = req.query.sortOrder === "asc" ? 1 : -1; // Default to descending
+      const page = parseInt(req.query.page) || 1; // Default page = 1
+      const limit = parseInt(req.query.limit) || 5; // Default limit = 10
+
+      if (!userId) {
+        return res.status(400).json({
+          success: false,
+          message: "userId is required.",
+        });
+      }
+
+      // Create filter for search
+      const filter = { userId };
+      if (searchText) {
+        filter.title = { $regex: searchText, $options: "i" };
+      }
+
+      // Calculate skip value for pagination
+      const skip = (page - 1) * limit;
+
+      // Fetch notes with search, sorting, and pagination
+      const notes = await note
+        .find(filter)
+        .sort({ [sortField]: sortOrder })
+        .skip(skip)
+        .limit(limit)
+        .populate("userId");
+
+      console.log("notee", notes);
+
+      const totalNotes = await note.countDocuments(filter); // Total notes for pagination info
+      // console.log("tt",totalNotes);
+
+      return res.status(200).json({
+        success: true,
+        message: "Notes fetched successfully.",
+        notes,
+        pagination: {
+          totalNotes,
+          currentPage: page,
+          totalPages: Math.ceil(totalNotes / limit),
+          limit,
+        },
       });
     }
+    else
+    {
+      const { searchText } = req.body;
+      const sortField = req.query.sortField || "title"; // Default sort field
+      const sortOrder = req.query.sortOrder === "asc" ? 1 : -1; // Default to descending
+      const page = parseInt(req.query.page) || 1; // Default page = 1
+      const limit = parseInt(req.query.limit) || 5; // Default limit = 10
 
-    // Create filter for search
-    const filter = { userId };
-    if (searchText) {
-      filter.title = { $regex: searchText, $options: "i" };
+      if (!userId) {
+        return res.status(400).json({
+          success: false,
+          message: "userId is required.",
+        });
+      }
+
+      // Create filter for search
+      const filter = {};
+      if (searchText) {
+        filter.title = { $regex: searchText, $options: "i" };
+      }
+
+      // Calculate skip value for pagination
+      const skip = (page - 1) * limit;
+
+      // Fetch notes with search, sorting, and pagination
+      const notes = await note
+        .find(filter)
+        .sort({ [sortField]: sortOrder })
+        .skip(skip)
+        .limit(limit)
+        .populate("userId");
+
+      console.log("notee", notes);
+
+      const totalNotes = await note.countDocuments(filter); // Total notes for pagination info
+      // console.log("tt",totalNotes);
+
+      return res.status(200).json({
+        success: true,
+        message: "Notes fetched successfully.",
+        notes,
+        pagination: {
+          totalNotes,
+          currentPage: page,
+          totalPages: Math.ceil(totalNotes / limit),
+          limit,
+        },
+      });
     }
-
-    // Calculate skip value for pagination
-    const skip = (page - 1) * limit;
-
-    // Fetch notes with search, sorting, and pagination
-    const notes = await note.find(filter)
-      .sort({ [sortField]: sortOrder })
-      .skip(skip)
-      .limit(limit);
-
-    const totalNotes = await note.countDocuments(filter);  // Total notes for pagination info
-
-    return res.status(200).json({
-      success: true,
-      message: "Notes fetched successfully.",
-      notes,
-      pagination: {
-        totalNotes,
-        currentPage: page,
-        totalPages: Math.ceil(totalNotes / limit),
-        limit,
-      },
-    });
   } catch (error) {
     return res.status(500).json({
       success: false,

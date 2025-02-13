@@ -70,7 +70,7 @@ export default function Signup() {
                             />
                             <p className="text-xs text-red-600 font-semibold min-h-[16px]">{errors.password?.message}</p>
                         </div>
-                        <select
+                        {/* <select
                             className="custom-select"
                             id="role"
                             defaultValue=""
@@ -80,7 +80,7 @@ export default function Signup() {
                             <option value="user">user</option>
                             <option value="admin">admin</option>
                         </select>
-                        <p className="text-xs text-red-600 font-semibold min-h-[16px]">{errors.role?.message}</p>
+                        <p className="text-xs text-red-600 font-semibold min-h-[16px]">{errors.role?.message}</p> */}
                         <p>
                             Already have an account? <Link to="/login" className="text-blue-500 underline">Login</Link>
                         </p>

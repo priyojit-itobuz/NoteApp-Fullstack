@@ -115,6 +115,7 @@ export default function Notes() {
             {notes.map((note) => (
               <Card
                 title={note.title}
+                userName = {note.userId.userName}
                 content={note.content}
                 key={note._id}
                 id={note._id}

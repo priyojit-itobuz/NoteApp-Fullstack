@@ -18,7 +18,8 @@ export const upload = multer({
 });
 
 export const uploadNotes = async (req, res) => {
-  const id = req.params.id;
+  try {
+    const id = req.params.id;
 
   if (!req.file) {
     return res.status(400).json({ message: "No file uploaded." });
@@ -32,10 +33,17 @@ export const uploadNotes = async (req, res) => {
       message: `File uploaded successfully: ${req.file.filename}`,
       data: req.file.filename,
     });
-  } else {
+  } 
+  else {
+    return res.status(404).json({
+      success : false,
+      message : "Note not Found"
+    })
+  }
+  } catch (error) {
     return res.status(500).json({
       success: false,
-      message: "Internal Error",
+      message: error.message,
     });
   }
 };

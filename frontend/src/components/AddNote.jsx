@@ -17,54 +17,33 @@ export default function AddNote() {
 
     const params = useParams();
     const id = params.id;
-    const { isLoggedIn, Logout, AccessToken ,user,setUser,Role} = useContext(CreateContext);
+    const { isLoggedIn, Logout, AccessToken, user, setUser, Role } = useContext(CreateContext);
 
     // console.log("THIS IS ADDNOTE",isLoggedIn);
-    
+
 
     // const token = AccessToken;
     const handleAddNote = async (data, e) => {
-        if(Role === 'user')
-        {
-            try {
-                console.log(data);
-                // e.target.reset();
-                const res = await axiosInstance.post("/note/addNote", data, {
-                    // headers: {'Authorization': `Bearer ${AccessToken}`}
-                })
-                if(res.data.success) {
-                    console.log(res.data)
-                    toast.success("Note Added SuccessFully");
-                    e.target.reset()
-                }
-            }
-    
-            catch (error) {
-                toast.error(error.response.data.message)
-                console.log(error.message);
+
+        try {
+            console.log(data);
+            // e.target.reset();
+            const res = await axiosInstance.post("/note/addNote", data, {
+                // headers: {'Authorization': `Bearer ${AccessToken}`}
+            })
+            if (res.data.success) {
+                console.log(res.data)
+                toast.success("Note Added SuccessFully");
+                e.target.reset()
             }
         }
-        else
-        {
-            //fix
-            try {
-                console.log(data);
-                // e.target.reset();
-                const res = await axiosInstance.post(`/admin/addNote/${id}`, data, {
-                    // headers: {'Authorization': `Bearer ${AccessToken}`}
-                })
-                if(res.data.success) {
-                    console.log(res.data)
-                    toast.success("Note Added SuccessFully");
-                    e.target.reset()
-                }
-            }
-    
-            catch (error) {
-                toast.error(error.response.data.message)
-                console.log(error.message);
-            }
+
+        catch (error) {
+            toast.error(error.response.data.message)
+            console.log(error.message);
         }
+
+
     }
 
     return (

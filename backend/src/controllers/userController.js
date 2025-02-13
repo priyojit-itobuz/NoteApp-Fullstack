@@ -10,7 +10,7 @@ import session from "../models/sessionModel.js";
 
 export const register = async (req, res) => {
   try {
-    const { userName, email, password ,role} = req.body;
+    const { userName, email, password } = req.body;
 
     // Check if the email already exists
     const existingUser = await user.findOne({ email });
@@ -42,7 +42,6 @@ export const register = async (req, res) => {
       userName,
       email,
       password: hashedPassword,
-      role,
       isVerified: false, 
     });
 
@@ -103,11 +102,11 @@ export const login = async (req, res) => {
     if (!passwordMatch) {
       return res.status(401).json({ message: "Invalid credentials" });
     }
-    const accessToken = jwt.sign({ userId }, process.env.SECRET_KEY, {
+    const accessToken = jwt.sign({ userId,role }, process.env.SECRET_KEY, {
       // 15m
       expiresIn: "15m",
     });
-    const refreshToken = jwt.sign({ userId }, process.env.SECRET_KEY, {
+    const refreshToken = jwt.sign({ userId,role }, process.env.SECRET_KEY, {
       expiresIn: "15d",
     });
 
@@ -146,8 +145,10 @@ export const regenerateAccessToken = async (req, res) => {
     {
       const userId = decoded.userId;
       req.body.userId  =  userId;
+      const role = decoded.role;
+      req.body.role = role
       const userVerify = await user.findById(userId);
-      const accessToken = jwt.sign({ userId }, process.env.SECRET_KEY, {
+      const accessToken = jwt.sign({ userId,role }, process.env.SECRET_KEY, {
         expiresIn: "15m",
       });
       return res.status(200).json({

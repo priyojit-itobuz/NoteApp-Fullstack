@@ -10,7 +10,7 @@ import ModalComponent from './Modal';
 import { Button, Modal } from "flowbite-react";
 import axiosInstance from '../utils/axiosInstance';
 
-export default function Card({ title, content, id, setNotes, notes, pic, fetchNotes ,fetchUserNotes}) {
+export default function Card({ title, content, id, setNotes, notes, pic, userName,fetchNotes }) {
     const { AccessToken, Role, setRole } = useContext(CreateContext);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [deleteModal, setDeleteModal] = useState(false);
@@ -56,11 +56,9 @@ export default function Card({ title, content, id, setNotes, notes, pic, fetchNo
                             {title}
                         </h2>
                         <div className="flex gap-4">
-                            {Role === 'user' ? (<Link to={`/edit/${id}`}>
+                            <Link to={`/edit/${id}`}>
                                 <GrEdit className="text-white hover:text-gray-300" size={20} />
-                            </Link>) : (<Link to={`/admin/edit/${id}`}>
-                                <GrEdit className="text-white hover:text-gray-300" size={20} />
-                            </Link>)}
+                            </Link>
 
                             <MdDelete
                                 className="text-white hover:text-red-500 cursor-pointer"
@@ -81,14 +79,32 @@ export default function Card({ title, content, id, setNotes, notes, pic, fetchNo
                         </p>
                     </div>
 
-                    <div className="flex justify-center">
+                    {Role === 'user'?(<div className="flex justify-center">
                         <button
                             onClick={() => setIsModalOpen(true)}
                             className="text-sm text-black dark:text-white font-medium hover:text-blue-600"
                         >
                             View Note
                         </button>
-                    </div>
+                    </div>):(<div className="flex justify-between">
+                        <p className='text-sm'>Author: {userName}</p>
+                        <button
+                            onClick={() => setIsModalOpen(true)}
+                            className="text-sm text-black dark:text-white font-medium hover:text-blue-600"
+                        >
+                            View Note
+                        </button>
+                    </div>)}
+
+                    {/* <div className="flex justify-between">
+                        <p className='text-sm'>Author: {userName}</p>
+                        <button
+                            onClick={() => setIsModalOpen(true)}
+                            className="text-sm text-black dark:text-white font-medium hover:text-blue-600"
+                        >
+                            View Note
+                        </button>
+                    </div> */}
                 </div>
             </div>
 
@@ -123,7 +139,7 @@ export default function Card({ title, content, id, setNotes, notes, pic, fetchNo
             )}
 
 
-            {deleteModal && (<ModalComponent deleteModal={deleteModal} setDeleteModal={setDeleteModal} id={id} notes={notes} setNotes={setNotes} fetchNotes={fetchNotes} fetchUserNotes={fetchUserNotes}/>)}
+            {deleteModal && (<ModalComponent deleteModal={deleteModal} setDeleteModal={setDeleteModal} id={id} notes={notes} setNotes={setNotes} fetchNotes={fetchNotes} />)}
         </>
     );
 }

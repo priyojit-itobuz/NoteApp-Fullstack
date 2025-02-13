@@ -9,7 +9,7 @@ import axiosInstance from '../utils/axiosInstance';
 
 export default function Navbar() {
     const [navbar, setNavbar] = useState(false);
-    const { isLoggedIn, Logout, AccessToken, setLoggedIn, user, setUser, Email, setEmail ,Role,setRole} = useContext(CreateContext);
+    const { isLoggedIn, Logout, AccessToken, setLoggedIn, user, setUser, Email, setEmail, Role, setRole } = useContext(CreateContext);
 
     // Persist login state using localStorage
     const [token, setToken] = useState(localStorage.getItem("accessToken") || '');
@@ -27,10 +27,10 @@ export default function Navbar() {
 
     async function handleLogout() {
         try {
-            const res = await axiosInstance.post("/logout", {}, 
-            {
-                // headers: { 'Authorization': `Bearer ${AccessToken}` }
-            })
+            const res = await axiosInstance.post("/logout", {},
+                {
+                    // headers: { 'Authorization': `Bearer ${AccessToken}` }
+                })
             if (res.data.success) {
                 console.log(res.data.message)
                 toast.success(res.data.message);
@@ -109,29 +109,36 @@ export default function Navbar() {
                                 <li className="text-white hover:text-indigo-200">
                                     <Link to="/" className="text-black">Home</Link>
                                 </li>
-                                {token && Role !== 'admin' &&(
+                                {token  && (
                                     <li className="text-white hover:text-indigo-200">
                                         <Link to="/notes" className="text-black">My Notes</Link>
                                     </li>
                                 )}
-                                {token && (Role === 'user' ?
-                                (
+
+                                {token && (
                                     <li className="text-white hover:text-indigo-200">
                                         <Link to="/profile" className="text-black">Profile</Link>
                                     </li>
-                                )
-                                :
-                                (<li className="text-white hover:text-indigo-200">
-                                    <Link to="/admin/profile" className="text-black">Profile</Link>
-                                </li>)
                                 )}
 
+                                {/* {token && (Role === 'user' ?
+                                    (
+                                        <li className="text-white hover:text-indigo-200">
+                                            <Link to="/profile" className="text-black">Profile</Link>
+                                        </li>
+                                    )
+                                    :
+                                    (<li className="text-white hover:text-indigo-200">
+                                        <Link to="/admin/profile" className="text-black">Profile</Link>
+                                    </li>)
+                                )} */}
 
-                                {token && Role === 'admin'&&(
+
+                                {/* {token && Role === 'admin'&&(
                                     <li className="text-white hover:text-indigo-200">
                                         <Link to="/admin" className="text-black">Admin</Link>
                                     </li>
-                                )}
+                                )} */}
                             </ul>
 
                             {/* For Mobile */}
@@ -153,8 +160,8 @@ export default function Navbar() {
                             ) : (
                                 <div className="flex gap-4 justify-center items-center mt-3 space-y-2 md:hidden">
                                     <div className='text-black flex'>
-                                Hi, <span className='text-green-600 uppercase font-semibold'>{user}</span>
-                            </div>
+                                        Hi, <span className='text-green-600 uppercase font-semibold'>{user}</span>
+                                    </div>
                                     <button
                                         className="inline-block w-full px-4 py-2 text-white text-center bg-gray-600 rounded-md shadow hover:bg-gray-800 w-[50%]"
                                         onClick={handleLogout}

@@ -23,6 +23,8 @@ export const isLoggedIn = async (req, res, next) => {
       {
         const id = decoded.userId;
         req.body.userId  =  id;
+        const role = decoded.role
+        req.body.role = role;
         const userVerify = await user.findById(id);
         const resp = await session.findOne({userId : id});
         

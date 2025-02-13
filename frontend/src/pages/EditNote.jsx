@@ -43,8 +43,8 @@ export default function EditNote() {
     
 
     const handleEditNote = async (data) => {
-        if(Role === 'user')
-        {
+        // if(Role === 'user')
+        // {
             try {
                 const res = await axiosInstance.put(`/note/updateNote/${id}`, data, {
                     // headers: { 'Authorization': `Bearer ${AccessToken}` }
@@ -58,23 +58,23 @@ export default function EditNote() {
                 toast.error(error.response?.data?.message || "Failed to update note");
                 console.error("Error updating note:", error.message);
             }
-        }
-        else
-        {
-            try {
-                const res = await axiosInstance.put(`/admin/updateNote/${id}`, data, {
-                    // headers: { 'Authorization': `Bearer ${AccessToken}` }
-                });
+        // }
+        // else
+        // {
+        //     try {
+        //         const res = await axiosInstance.put(`/admin/updateNote/${id}`, data, {
+        //             // headers: { 'Authorization': `Bearer ${AccessToken}` }
+        //         });
     
-                if (res.data.success) {
-                    toast.success("Note updated successfully!");
-                    navigate('/admin');
-                }
-            } catch (error) {
-                toast.error(error.response?.data?.message || "Failed to update note");
-                console.error("Error updating note:", error.message);
-            }
-        }
+        //         if (res.data.success) {
+        //             toast.success("Note updated successfully!");
+        //             navigate('/admin');
+        //         }
+        //     } catch (error) {
+        //         toast.error(error.response?.data?.message || "Failed to update note");
+        //         console.error("Error updating note:", error.message);
+        //     }
+        // }
 
     };
 

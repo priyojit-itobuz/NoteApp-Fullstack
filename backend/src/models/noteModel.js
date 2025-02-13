@@ -18,7 +18,11 @@ const noteModel = new mongoose.Schema({
     type: Schema.Types.ObjectId,
     ref: user,
     required : true
-  }
+  },
+  // author : {
+  //   type: String,
+  //   default : "",
+  // }
 });
 
 export default mongoose.model("note", noteModel);
