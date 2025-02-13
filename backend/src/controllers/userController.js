@@ -3,6 +3,7 @@ import jwt from "jsonwebtoken";
 import bcrypt from "bcryptjs";
 import { mailSender } from "../EmailVerify/mailSender.js";
 import session from "../models/sessionModel.js";
+import statusCodes from "../config/constants.js";
 
 
 
@@ -25,13 +26,13 @@ export const register = async (req, res) => {
 
         await mailSender(email, token);
 
-        return res.status(200).json({
+        return res.status(statusCodes.OK).json({
           success: true,
           message: "User already exists but not verified. Verification email sent again.",
         });
       } else {
         // If the user exists and is verified, prevent duplicate registration
-        return res.status(400).json({ error: "User is already registered and verified. Please log in." });
+        return res.status(statusCodes.BAD_REQUEST).json({ error: "User is already registered and verified. Please log in." });
       }
     }
 
@@ -52,14 +53,14 @@ export const register = async (req, res) => {
 
     await mailSender(email, token);
 
-    res.status(201).json({
+    res.status(statusCodes.CREATED).json({
       success: true,
       message: "User registered successfully. Verification email sent.",
     });
 
   } catch (error) {
     console.error("Registration Error:", error);
-    res.status(500).json({
+    res.status(statusCodes.INTERNAL_SERVER_ERROR).json({
       success: false,
       message: error.message,
     });
@@ -77,7 +78,7 @@ export const login = async (req, res) => {
     const currentUser = await user.findOne({ email: req.body.email },{password:1,email:1,userName:1,role:1}).exec();
     console.log("my user",currentUser);
     if (!currentUser) {
-      return res.status(404).json({ message: "User not Found" });
+      return res.status(statusCodes.NOT_FOUND).json({ message: "Invalid Credentials" });
     }
     const userName = currentUser.userName;
     const email = currentUser.email
@@ -85,7 +86,7 @@ export const login = async (req, res) => {
     // const currEmail = currentUser.email
     if(currentUser.isVerified === false)
     {
-      return res.status(400).json({
+      return res.status(statusCodes.UNAUTHORIZED).json({
         success : false,
         message : "User not Verified"
       })
@@ -95,12 +96,11 @@ export const login = async (req, res) => {
     
 
     const passwordMatch = await bcrypt.compare(
-      // req.body.password,
       password,
       currentUser.password
     );
     if (!passwordMatch) {
-      return res.status(401).json({ message: "Invalid credentials" });
+      return res.status(statusCodes.UNAUTHORIZED).json({ message: "Invalid credentials" });
     }
     const accessToken = jwt.sign({ userId,role }, process.env.SECRET_KEY, {
       // 15m
@@ -112,7 +112,7 @@ export const login = async (req, res) => {
 
     const response = await session.create({userId });
 
-    res.status(200).json({
+    res.status(statusCodes.OK).json({
       success: true,
       message: "Logged In",
       accessToken,
@@ -122,7 +122,7 @@ export const login = async (req, res) => {
       email
     });
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    res.status(statusCodes.INTERNAL_SERVER_ERROR).json({ message: error.message });
   }
 };
 
@@ -131,12 +131,12 @@ export const regenerateAccessToken = async (req, res) => {
   const refreshToken = authHeader.split(" ")[1];
 
   if (!refreshToken) {
-    return res.status(401).json({ error: "Unauthorized" });
+    return res.status(statusCodes.UNAUTHORIZED).json({ error: "Unauthorized" });
   }
 
   jwt.verify(refreshToken,process.env.SECRET_KEY, async (error, decoded) => {
     if (error) {
-      res.status(400).json({
+      res.status(statusCodes.BAD_REQUEST).json({
         success : false,
         message : "Error in refreshToken or expired, Login Again"
       })
@@ -151,7 +151,7 @@ export const regenerateAccessToken = async (req, res) => {
       const accessToken = jwt.sign({ userId,role }, process.env.SECRET_KEY, {
         expiresIn: "15m",
       });
-      return res.status(200).json({
+      return res.status(statusCodes.OK).json({
         success : true,
         accessToken
       })      
@@ -169,20 +169,18 @@ export const logout = async (req, res) => {
     const deleteSession = await session.deleteMany({userId : id})
     
     if (searchUser && searchUser.isVerified === true) {
-      // searchUser.isVerified = false;
-      // searchUser.save();
-      res.status(200).json({
+      res.status(statusCodes.OK).json({
         success: true,
         message: "User logout success",
       });
     } else {
-      res.status(400).json({
+      res.status(statusCodes.BAD_REQUEST).json({
         success: false,
         message: "User is not logged In, Login first",
       });
     }
   } catch (error) {
-    res.status(500).json({
+    res.status(statusCodes.INTERNAL_SERVER_ERROR).json({
       success: false,
       message: "Internal Server Error",
     });
@@ -200,14 +198,14 @@ export const changeUserName = async(req,res) => {
       console.log("my user",searchUser);  
       searchUser.userName = userName;
       await searchUser.save();
-      res.status(200).json({
+      res.status(statusCodes.OK).json({
         success : true,
         message : searchUser
       })  
     }
     else
     {
-      res.status(401).json({
+      res.status(statusCodes.UNAUTHORIZED).json({
         success : false,
         message : "Error in Updating Username"
       })
@@ -216,7 +214,7 @@ export const changeUserName = async(req,res) => {
   catch(error)
   {
     console.log(error.message);
-    res.status(500).json({
+    res.status(statusCodes.INTERNAL_SERVER_ERROR).json({
       success : false,
       message: "Internal Server Error"
     })
@@ -228,7 +226,6 @@ export const changeUserName = async(req,res) => {
 export const uploadUserProfilePic = async (req, res) => {
   try {
     const id = req.body.userId
-    console.log("my id",id);
 
     if (!req.file) {
       return res.status(400).json({ message: "No file uploaded." });
@@ -239,7 +236,7 @@ export const uploadUserProfilePic = async (req, res) => {
     if (searchUser) {
       searchUser.profilePic = "http://localhost:3000/uploads/" + req.file.filename;
       await searchUser.save();
-      return res.status(200).json({
+      return res.status(statusCodes.OK).json({
         success: true,
         message: `Profile Picture uploaded successfully: ${req.file.filename}`,
         data: req.file.filename,
@@ -247,13 +244,13 @@ export const uploadUserProfilePic = async (req, res) => {
     }
     else
     {
-      return res.status(400).json({
+      return res.status(statusCodes.BAD_REQUEST).json({
         success : false,
         message: "Profile Picture upload Failed"
       })
     }
   } catch (error) {
-    return res.status(500).json({
+    return res.status(statusCodes.INTERNAL_SERVER_ERROR).json({
       success: false,
       message: error.message,
     });
@@ -266,7 +263,7 @@ export const getUser = async(req,res) => {
     const searchUser = await user.findById(id);
     if(searchUser)
     {
-        return res.status(200).json({
+        return res.status(statusCodes.OK).json({
           success : true,
           message : "User Fetched Success",
           searchUser
@@ -274,14 +271,14 @@ export const getUser = async(req,res) => {
     }
     else
     {
-      return res.status(400).json({
+      return res.status(statusCodes.BAD_REQUEST).json({
         success : false,
         message : "Failed to Fetch User"
       })
     }
   } catch (error) {
       console.log(error.message);
-      return res.status(500).json({
+      return res.status(statusCodes.INTERNAL_SERVER_ERROR).json({
         success : false,
         message : error.message
       })

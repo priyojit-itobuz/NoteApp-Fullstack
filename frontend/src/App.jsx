@@ -12,6 +12,8 @@ import Profile from "./pages/Profile";
 import Notes from "./pages/Notes";
 import Home from "./pages/Home";
 import Admin from "./pages/Admin";
+import Error from "./pages/Error";
+import ProtectedRouteAdmin from "./middleware/ProtectedRouteAdmin";
 
 function App() {
   return (
@@ -22,7 +24,16 @@ function App() {
         <Route path="/verify/:token" element={<VerifyEmail />} />
         <Route path="/login" element={<Login />} />
         <Route path="/modal" element={<ModalComponent />} />
-        <Route path="/admin" element={<Admin />} />
+        <Route path="*" element={<Error/>}/>
+
+        <Route
+          path="/admin"
+          element={
+            <ProtectedRouteAdmin>
+              <Admin />
+            </ProtectedRouteAdmin>
+          }
+        />
 
         <Route
           path="/addNote"

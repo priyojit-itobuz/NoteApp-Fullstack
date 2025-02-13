@@ -3,15 +3,14 @@ import { Navigate } from 'react-router-dom';
 import { CreateContext } from '../context/myContext';
 
 
-const ProtectedRoute = ({ children }) => {
-  const { isLoggedIn,AccessToken} = useContext(CreateContext);
+const ProtectedRouteAdmin = ({ children }) => {
+  const { isLoggedIn,AccessToken,Role} = useContext(CreateContext);
 
-  if (!isLoggedIn || !AccessToken) {
+  if (!isLoggedIn || !AccessToken || Role !== 'admin') {
     return <Navigate to="/login" />;
   }
-  
 
   return children;
 };
 
-export default ProtectedRoute;
+export default ProtectedRouteAdmin;
