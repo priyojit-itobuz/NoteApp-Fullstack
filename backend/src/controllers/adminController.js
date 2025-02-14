@@ -53,7 +53,6 @@ export const deleteUser = async(req,res) => {
     }
 
   } catch (error) {
-    console.log("error");
     return res.status(statusCodes.INTERNAL_SERVER_ERROR).json({
       success : false,
       message : error.message

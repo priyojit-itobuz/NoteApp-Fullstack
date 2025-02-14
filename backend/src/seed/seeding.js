@@ -12,7 +12,6 @@ async function reset () {
     await note.deleteMany();
     await user.deleteMany();
     await session.deleteMany();
-    console.log('Database reset');
 }
 
 async function createDummy() {

@@ -23,7 +23,6 @@ const dummyUser = async (num) => {
   }
   try{
      await user.insertMany(users)
-     console.log(`${num} users have been inserted in the userSchema`)
   }
   catch(error){
      console.log(error)

@@ -1,15 +1,19 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { yupResolver } from "@hookform/resolvers/yup";
 import { signupUser } from '../validation/userValidation';
 import { useForm } from 'react-hook-form';
 import { toast } from 'react-toastify';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
+import { IoMdEye } from "react-icons/io";
+import { IoMdEyeOff } from "react-icons/io";
 
 export default function Signup() {
     const { register, handleSubmit, formState: { errors } } = useForm({
         resolver: yupResolver(signupUser),
     });
+
+    const [seePassword, seeSetPassword] = useState(false)
 
     const handleRegistration = async (data, e) => {
         try {
@@ -22,8 +26,14 @@ export default function Signup() {
                 e.target.reset();
             }
         } catch (error) {
-            console.log(error);
-            toast.error(error.response?.data?.error || "Something went wrong");
+            if(error.status === 429)
+            {
+                toast.error("Too Many Request, Please Try Later")
+            }
+            else
+            {
+                toast.error(error.response?.data?.error || "Something went wrong");
+            }
         }
     };
 
@@ -57,12 +67,21 @@ export default function Signup() {
                         </div>
                         <div className="flex flex-col">
                             <label className="text-sm font-medium text-gray-900">Your Password</label>
-                            <input
-                                placeholder="••••••••"
-                                {...register('password')}
-                                className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg w-full p-2"
-                                type="password"
-                            />
+                            <div className='w-100 relative'>
+                                {seePassword ? (<><span className='flex justify-center items-center absolute h-100 top-[6px] right-3 cursor-pointer' onClick={() => seeSetPassword(false)}><IoMdEye size={25} /></span>
+                                    <input
+                                        placeholder="••••••••"
+                                        {...register('password')}
+                                        className="block bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg w-full p-2"
+                                        type="text"
+                                    /></>) : (<><span className='flex justify-center items-center absolute h-100 top-[6px]  right-3 cursor-pointer' onClick={() => seeSetPassword(true)}><IoMdEyeOff size={25} /></span>
+                                        <input
+                                            placeholder="••••••••"
+                                            {...register('password')}
+                                            className="block bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg w-full p-2"
+                                            type="password"
+                                        /></>)}
+                            </div>
                             <p className="text-xs text-red-600 font-semibold min-h-[16px]">{errors.password?.message}</p>
                         </div>
                         <p>

@@ -4,13 +4,10 @@ import { CreateContext } from '../context/myContext';
 import { toast } from 'react-toastify';
 import axiosInstance from '../utils/axiosInstance';
 
-
-
 export default function Navbar() {
     const [navbar, setNavbar] = useState(false);
     const { isLoggedIn, Logout, AccessToken, user, setUser, setEmail, Role, setRole } = useContext(CreateContext);
 
-    // Persist login state using localStorage
     const [token, setToken] = useState(localStorage.getItem("accessToken") || '');
     const navigate = useNavigate();
 
@@ -30,7 +27,6 @@ export default function Navbar() {
                 {
                 })
             if (res.data.success) {
-                console.log(res.data.message)
                 toast.success(res.data.message);
                 Logout();
                 localStorage.removeItem("accessToken");
@@ -47,7 +43,6 @@ export default function Navbar() {
         }
         catch (error) {
             toast.error(error.response.data.message)
-            console.log(error);
         }
 
     }
@@ -162,7 +157,7 @@ export default function Navbar() {
                         </div>
                     </div>
 
-                    {/* Desktop View: Sign In / Sign Up / Logout */}
+                    {/* For Desktop: */}
                     {!token ? (
                         <div className="hidden space-x-2 md:inline-block">
                             <Link

@@ -1,6 +1,3 @@
-
-
-
 import React, { useContext, useEffect, useState } from 'react';
 import Navbar from '../components/Navbar';
 import Card from '../components/Card';
@@ -20,7 +17,7 @@ export default function Notes() {
   const [sortOrder, setSortOrder] = useState("asc");
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
-  const limit = 5; // Number of notes per page
+  const limit = 5; 
 
   // Debouncing the search input
   useEffect(() => {
@@ -28,7 +25,7 @@ export default function Notes() {
       setDebouncedSearchText(searchText);
     }, 300); // 300ms delay
 
-    return () => clearTimeout(timer); // Clear timeout on component unmount or searchText change
+    return () => clearTimeout(timer); 
   }, [searchText]);
 
   async function fetchNotes(page = 1) {
@@ -63,7 +60,7 @@ export default function Notes() {
     }
   };
 
-  // Fetch notes when dependencies change
+
   useEffect(() => {
     fetchNotes(currentPage);
   }, [isLoggedIn, debouncedSearchText, sortField, sortOrder, currentPage]);
@@ -73,17 +70,12 @@ export default function Notes() {
       <Navbar />
       <div className="flex justify-between items-center">
         <h1 className="mt-7 text-2xl font-semibold md:text-3xl md:mt-16">All Notes</h1>
-
-
         {Role === 'user' ? (<div
           className="w-fit p-3 flex justify-center mt-8 gap-3 items-center border border-black my-2 rounded-full dark:border-gray-200 dark:text-black md:mt-16 cursor-pointer hover:bg-slate-200"
           onClick={() => navigate("/addNote")}>
           <IoAddCircleSharp size={30} />
           <h5 className="text-xl font-medium">Add Note</h5>
         </div>):(<></>)}
-        
-
-
       </div>
 
       {/* Search Bar */}

@@ -18,7 +18,7 @@ export const CreateContextProvider = (props) => {
 
   useEffect(() => {
     localStorage.setItem("loginstatus", isLoggedIn);
-  }, [isLoggedIn]); // Updates localStorage whenever isLoggedIn changes
+  }, [isLoggedIn]); 
 
   const LoggedIn = () => {
     setLoggedIn(true);

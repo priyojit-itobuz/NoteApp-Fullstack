@@ -8,7 +8,7 @@ import axiosInstance from "../utils/axiosInstance";
 export default function ModalComponent({ deleteModal, setDeleteModal, id, fetchNotes }) {
   const { AccessToken } = useContext(CreateContext);
 
-  // Delete note function
+  // Delete note 
   async function handleDelete() {
     if (!AccessToken) {
       toast.error("Unauthorized. Please log in.");
@@ -20,7 +20,7 @@ export default function ModalComponent({ deleteModal, setDeleteModal, id, fetchN
 
       if (res.data.success) {
         toast.success("Note deleted successfully.");
-        setDeleteModal(false); // Close the modal
+        setDeleteModal(false); 
         fetchNotes();
       } else {
         toast.error("Failed to delete the note.");

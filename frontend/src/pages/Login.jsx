@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from 'react'
+import React, { useContext, useState } from 'react'
 import { useForm } from 'react-hook-form';
 import { Link, useNavigate } from 'react-router-dom'
 import { loginUser } from '../validation/userValidation';
@@ -6,6 +6,8 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { toast } from 'react-toastify';
 import axios from 'axios';
 import { CreateContext } from '../context/myContext';
+import { IoMdEye } from "react-icons/io";
+import { IoMdEyeOff } from "react-icons/io";
 
 export default function Login() {
 
@@ -14,12 +16,14 @@ export default function Login() {
     });
     const navigate = useNavigate();
     const { setAccessToken, setRefreshToken, setUser, setEmail, LoggedIn, Role, setRole } = useContext(CreateContext);
+    const [seePassword, seeSetPassword] = useState(false)
 
     const handleSignin = async (data) => {
         try {
             const res = await axios.post("http://localhost:3000/login", data, {
                 headers: { 'Content-type': 'application/json' },
             })
+            
             if (res.data.success) {
                 const { accessToken, refreshToken, userName, email, role } = res.data;
                 localStorage.setItem("accessToken", accessToken);
@@ -38,8 +42,14 @@ export default function Login() {
             }
         }
         catch (error) {
-            console.log(error);
-            toast.error(error.response.data.message);
+            if(error.status === 429)
+            {
+                toast.error("Too many Request, Try Later")
+            }
+            else
+            {
+                toast.error(error.response.data.message);
+            }
         }
     }
 
@@ -71,21 +81,27 @@ export default function Login() {
                             </div>
 
                             {/* Password Field */}
-                            <div className='flex flex-col justify-center items-center w-full'>
-                                <label className="block mb-2 text-sm font-medium text-gray-900">
-                                    Your Password
-                                </label>
-                                <input
-                                    placeholder="••••••••"
-                                    {...register('password')}
-                                    className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg block w-full p-2"
-                                    id="password"
-                                    type="password"
-                                />
-                                <p className='text-xs text-red-600 font-semibold min-h-[20px]'>
-                                    {errors.password?.message || " "}
-                                </p>
+
+                            <div className="flex flex-col">
+                                <label className="text-sm font-medium text-gray-900">Your Password</label>
+                                <div className='w-100 relative'>
+                                    {seePassword ? (<><span className='flex justify-center items-center absolute h-100 top-[6px] right-3 cursor-pointer' onClick={() => seeSetPassword(false)}><IoMdEye size={25} /></span>
+                                        <input
+                                            placeholder="••••••••"
+                                            {...register('password')}
+                                            className="block bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg w-full p-2"
+                                            type="text"
+                                        /></>) : (<><span className='flex justify-center items-center absolute h-100 top-[6px]  right-3 cursor-pointer' onClick={() => seeSetPassword(true)}><IoMdEyeOff size={25} /></span>
+                                            <input
+                                                placeholder="••••••••"
+                                                {...register('password')}
+                                                className="block bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg w-full p-2"
+                                                type="password"
+                                            /></>)}
+                                </div>
+                                <p className="text-xs text-red-600 font-semibold min-h-[16px]">{errors.password?.message}</p>
                             </div>
+
 
                             <p>Don't have an account?
                                 <Link to="/signup" className='text-blue-600 underline'> Sign Up</Link>

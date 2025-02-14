@@ -28,8 +28,6 @@ export default function Profile() {
 
             if (res.data.success) {
                 const userName = res.data.message.userName;
-                console.log("my name", userName);
-
                 localStorage.setItem("userName", userName);
                 setUser(userName)
                 toast.success("UserName Updated Success");
@@ -49,14 +47,10 @@ export default function Profile() {
                 });
 
                 if (res.data.success) {
-                    console.log("total data", res.data);
-
-                    console.log("getUser", res.data.searchUser.profilePic);
                     setProfile(res.data.searchUser.profilePic)
                 }
             } catch (error) {
-                console.log(error);
-
+                console.error(error);
                 toast.error(error.response?.data?.error || "Something went wrong");
             }
         }
@@ -90,7 +84,6 @@ export default function Profile() {
                             alt="Profile Picture"
                             className="rounded-full w-48 h-48 mx-auto mb-4 border-4 border-indigo-800 transition-transform duration-300 hover:scale-105 ring ring-gray-300"
                         />
-                        {/* <FaFileUpload /> */}
                         <div className='flex gap-3 justify-center items-center'>
                             <button className="mt-4 bg-indigo-800 text-white px-2 py-2 rounded-lg hover:bg-blue-900 transition-colors duration-300 ring ring-gray-300 hover:ring-indigo-300" onClick={() => setIsModalOpen(true)}>
                                 Edit Username

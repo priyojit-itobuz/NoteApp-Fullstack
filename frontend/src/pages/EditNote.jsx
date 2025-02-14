@@ -26,7 +26,6 @@ export default function EditNote() {
 
                 if (res.data.success) {
                     const { title, content } = res.data.particularNote;
-                    //set value is form hook method
                     setValue('title', title);
                     setValue('content', content);
                 }

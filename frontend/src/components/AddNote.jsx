@@ -24,7 +24,6 @@ export default function AddNote() {
             data.userId = uId;
             const res = await axiosInstance.post("/note/addNote", data, {})
             if (res.data.success) {
-                console.log(res.data)
                 toast.success("Note Added SuccessFully");
                 e.target.reset()
                 if (Role === 'admin') {
@@ -35,7 +34,6 @@ export default function AddNote() {
 
         catch (error) {
             toast.error(error.response.data.message)
-            console.log(error.message);
         }
     }
 

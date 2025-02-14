@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link, useParams } from 'react-router-dom'
 
-
 const VerifyEmail = () => {
     const [message, setMessage] = useState('Verifying...');
     const [flag,setFlag] = useState(false)
@@ -28,7 +27,7 @@ const VerifyEmail = () => {
                     setMessage(jsonData.message || "Verification failed. The link may have expired.");
                 }
             } catch (error) {
-                console.log(error);
+                console.error(error);
                 setMessage("Verification failed. The link may have expired.");
             }
         };

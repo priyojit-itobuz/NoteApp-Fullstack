@@ -1,5 +1,6 @@
 import note from "../models/noteModel.js";
 import user from "../models/userModel.js";
+import statusCodes from "../config/constants.js";
 
 // add note based on usedId
 export const addNote = async (req, res) => {
@@ -9,7 +10,7 @@ export const addNote = async (req, res) => {
     const findTitle = await note.findOne({ userId, title });
 
     if (findTitle) {
-      return res.status(400).json({
+      return res.status(statusCodes.BAD_REQUEST).json({
         success: false,
         message: "Note Title already exists",
       });
@@ -18,7 +19,7 @@ export const addNote = async (req, res) => {
     const response = await note.create({ title, content, userId });
 
     if (response) {
-      res.status(200).json({
+      res.status(statusCodes.CREATED).json({
         success: true,
         data: response,
         message: "Note Created Success",
@@ -26,7 +27,7 @@ export const addNote = async (req, res) => {
     }
   } catch (error) {
     console.error(error);
-    res.status(500).json({
+    res.status(statusCodes.INTERNAL_SERVER_ERROR).json({
       success: false,
       data: "server error",
       message: error.message,
@@ -41,19 +42,19 @@ export const getAllNote = async (req, res) => {
     const notes = await note.find({});
 
     if (notes) {
-      res.status(200).json({
+      res.status(statusCodes.OK).json({
         success: true,
         message: "Note fetched success",
         data: notes,
       });
     } else {
-      res.status(404).json({
+      res.status(statusCodes.NOT_FOUND).json({
         success: false,
         message: "Note fetch fail",
       });
     }
   } catch (error) {
-    res.status(500).json({
+    res.status(statusCodes.INTERNAL_SERVER_ERROR).json({
       success: false,
       message: error.message,
       data: "Internal server error",
@@ -71,7 +72,7 @@ export const getParticularUserNote = async (req, res) => {
     const currentUserId = await note.find({ userId });
 
     if (!currentUserId.length) {
-      return res.status(400).json({
+      return res.status(statusCodes.BAD_REQUEST).json({
         success: false,
         message: "User not loggedin",
       });
@@ -81,20 +82,20 @@ export const getParticularUserNote = async (req, res) => {
     const loginStatus = userVerify.isVerified;
     if (loginStatus) {
       if (currentUserId) {
-        res.status(200).json({
+        res.status(statusCodes.OK).json({
           success: true,
           message: "data fetched success",
           data: currentUserId,
         });
       }
     } else {
-      res.status(400).json({
+      res.status(statusCodes.BAD_REQUEST).json({
         success: false,
         message: "User is not Logged In",
       });
     }
   } catch (error) {
-    res.status(500).json({
+    res.status(statusCodes.INTERNAL_SERVER_ERROR).json({
       success: false,
       message: "Note fetch failed",
     });
@@ -107,17 +108,17 @@ export const getOneNote = async (req, res) => {
     const id = req.params.id;
     const particularNote = await note.findById({ _id: id });
     if (particularNote) {
-      res.status(200).json({
+      res.status(statusCodes.OK).json({
         success: true,
         message: "Note fetched success",
         particularNote,
       });
     }
   } catch (error) {
-    res.status(500).json({
+    res.status(statusCodes.INTERNAL_SERVER_ERROR).json({
       success: false,
       data: "server error",
-      message: "User cant be fetched",
+      message: error.message,
     });
   }
 };
@@ -128,31 +129,40 @@ export const updateNote = async (req, res) => {
   try {
     const id = req.params.id;
     const userId = req.body.userId;
-
     const { title, content } = req.body;
-    const findTitle = await note.findOne({ userId, title });
-    if (findTitle) {
-      return res.status(400).json({
+
+    const searchNote = await note.findById(id);  // Search for the note to update
+    if (!searchNote) {
+      return res.status(statusCodes.NOT_FOUND).json({
         success: false,
-        message: "Note Title already exists",
+        message: "Note not found",
       });
     }
 
-    const searchNote = await note.findById(id);
-    const searchUser = searchNote.userId;
-    const findUser = await user.findById(searchUser);
+    // If the title is changing, check for duplicates
+    if (title && title !== searchNote.title) {
+      const findTitle = await note.findOne({ userId, title });
+      if (findTitle) {
+        return res.status(statusCodes.BAD_REQUEST).json({
+          success: false,
+          message: "Note Title already exists",
+        });
+      }
+    }
 
-    const updatedNote = await note.findByIdAndUpdate(
-      { _id: id },
-      { title, content }
-    );
-    res.status(200).json({
+    // Update the note
+    searchNote.title = title || searchNote.title;  // Only update if title is provided
+    searchNote.content = content || searchNote.content;  // Only update if content is provided
+
+    const updatedNote = await searchNote.save();
+
+    res.status(statusCodes.OK).json({
       success: true,
-      message: "Note updated Success",
+      message: "Note updated successfully",
       data: updatedNote,
     });
   } catch (error) {
-    res.status(500).json({
+    res.status(statusCodes.INTERNAL_SERVER_ERROR).json({
       success: false,
       data: "server error",
       message: "Note update failed",
@@ -160,13 +170,14 @@ export const updateNote = async (req, res) => {
   }
 };
 
+
 // delete note based on note id
 export const deleteNote = async (req, res) => {
   try {
     const id = req.params.id;
     const searchNote = await note.findById(id);
     if (!searchNote) {
-      return res.status(404).json({
+      return res.status(statusCodes.NOT_FOUND).json({
         success: false,
         message: "Note Already deleted",
       });
@@ -177,13 +188,13 @@ export const deleteNote = async (req, res) => {
 
     const deleteNote = await note.findByIdAndDelete(id);
 
-    res.status(200).json({
+    res.status(statusCodes.OK).json({
       success: true,
       message: "Note Deleted Success",
       deleteNote,
     });
   } catch (error) {
-    res.status(500).json({
+    res.status(statusCodes.INTERNAL_SERVER_ERROR).json({
       success: false,
       message: "Note Delete Failed",
     });
@@ -199,7 +210,7 @@ export const search = async (req, res) => {
     const { searchText } = req.body;
 
     if (!userId || !searchText) {
-      return res.status(400).json({
+      return res.status(statusCodes.BAD_REQUEST).json({
         success: false,
         message: "userId and searchText are required.",
       });
@@ -211,19 +222,19 @@ export const search = async (req, res) => {
     });
 
     if (notes.length > 0) {
-      return res.status(200).json({
+      return res.status(statusCodes.OK).json({
         success: true,
         message: "Notes fetched successfully.",
         notes,
       });
     } else {
-      return res.status(404).json({
+      return res.status(statusCodes.NOT_FOUND).json({
         success: false,
         message: "No notes found.",
       });
     }
   } catch (error) {
-    res.status(500).json({
+    res.status(statusCodes.INTERNAL_SERVER_ERROR).json({
       success: false,
       message: error.message,
     });
@@ -243,13 +254,13 @@ export const getPaginatedNotes = async (req, res) => {
     // Getting notes with pagination
     const notes = await note.find({ userId }).skip(skip).limit(limit);
 
-    res.status(200).json({
+    res.status(statusCodes.OK).json({
       success: true,
       message: "Notes fetched as per query",
       data: notes,
     });
   } catch (error) {
-    res.status(500).json({
+    res.status(statusCodes.INTERNAL_SERVER_ERROR).json({
       success: false,
       message: error.message,
       data: "Internal server error",
@@ -264,14 +275,14 @@ export const sortNotes = async (req, res) => {
       [req.query.sortField]: req.query.sortOrder === "asc" ? 1 : -1,
     };
     const sortedDocuments = await note.find({ userId }).sort(sortCriteria);
-    return res.status(200).json({
+    return res.status(statusCodes.OK).json({
       success: true,
       sortedDocuments,
     });
   } catch (error) {
-    return res.status(500).json({
+    return res.status(statusCodes.INTERNAL_SERVER_ERROR).json({
       success: false,
-      message: "Internal Server Error",
+      message: error.message,
     });
   }
 };
@@ -284,21 +295,21 @@ export const searchSortPaginateNotes = async (req, res) => {
     const { sortField = "title", sortOrder = "asc", page = 1, limit = 5 } = req.query;
 
     if (!userId) {
-      return res.status(400).json({ success: false, message: "userId is required." });
+      return res.status(statusCodes.BAD_REQUEST).json({ success: false, message: "userId is required." });
     }
 
     const filter = {};
 
     if (role === "user") {
-      filter.userId = userId; // Users can only see their own notes
+      filter.userId = userId; // user can only see their own note
       if (searchText) {
-        filter.title = { $regex: searchText, $options: "i" }; // Case-insensitive search on title
+        filter.title = { $regex: searchText, $options: "i" }; 
       }
     } else {
       if (searchText) {
         filter.$or = [
           { title: { $regex: searchText, $options: "i" } },
-          { "userId.userName": { $regex: searchText, $options: "i" } }, // Search by author name
+          { "userId.userName": { $regex: searchText, $options: "i" } }, 
         ];
       }
     }
@@ -314,14 +325,14 @@ export const searchSortPaginateNotes = async (req, res) => {
     const totalNotes = await note.countDocuments(filter);
     const totalPages = Math.ceil(totalNotes / limit);
 
-    return res.status(200).json({
+    return res.status(statusCodes.OK).json({
       success: true,
       message: "Notes fetched successfully.",
       notes,
       pagination: { totalNotes, currentPage: page, totalPages, limit },
     });
   } catch (error) {
-    return res.status(500).json({ success: false, message: "Internal Server Error", error: error.message });
+    return res.status(statusCodes.INTERNAL_SERVER_ERROR).json({ success: false, message: "Internal Server Error", error: error.message });
   }
 };
 

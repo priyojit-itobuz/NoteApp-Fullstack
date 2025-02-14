@@ -24,7 +24,6 @@ const dummyNotes = async (num) => {
   }
   try{
      await note.insertMany(notes)
-     console.log(`${num} notes have been inserted in the noteSchema`)
   }
   catch(error){
      console.log(error)

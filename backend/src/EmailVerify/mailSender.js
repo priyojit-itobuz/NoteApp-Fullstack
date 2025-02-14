@@ -5,7 +5,7 @@ export const mailSender = async (email,token) => {
     const transporter = nodemailer.createTransport({
       service: "gmail",
       auth: {
-        user: "kundupriyojit21@gmail.com",
+        user: "priyojit@itobuz.com",
         pass: process.env.MAIL_PASSWORD,
       },
     });
@@ -34,10 +34,10 @@ export const mailSender = async (email,token) => {
     };
 
   
-    transporter.sendMail(mailConfiguration, (error, res) => {
+    transporter.sendMail(mailConfiguration, (error) => {
       if (error) 
       {
-        console.log(error);
+         throw new Error(error.message);
       }
       else {
         console.log("Email sent successfully");
