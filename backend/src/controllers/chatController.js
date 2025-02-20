@@ -1,45 +1,59 @@
+import user from "../models/userModel.js";
+import chatSchema from "../models/chatModel.js";
 import statusCodes from "../config/constants.js";
-import chat from '../models/chatModel.js';
 
-export const getMessages = async (req,res) => {
-    try {
-        const messages = await chat.find();
-        return res.status(statusCodes.OK).json({
-            success : true,
-            message: "Chats Found",
-            messages
-        })
-    } catch (error) {
-        return res.status(statusCodes.INTERNAL_SERVER_ERROR).json({
-            success : false,
-            message : error.message
-        })       
+// one to one-chat posting (through id)
+export const sendChat = async (req, res) => {
+  try {
+    const { senderId, receiverId, message } = req.body;
+    const sender = await user.findById(senderId);
+    const receiver = await user.findById(receiverId);
+    const data = await chatSchema.create({
+      Sender: sender.userName,
+      Receiver: receiver.userName,
+      message: message,
+      userId_Sender: senderId,
+      userId_Receiver: receiverId,
+    });
+    if (data) {
+      return res.status(statusCodes.CREATED).json({
+        success: true,
+        message: "Message stored successfully",
+        data: data,
+      });
     }
-}
+  } catch (error) {
+    return res.status(statusCodes.INTERNAL_SERVER_ERROR).json({
+      success: false,
+      message: error,
+    });
+  }
+};
 
-export const sendMessage = async(req,res) => {
-    try {
-        const userId = req.body.userId
-        const { message } = req.body;
-        if (!userId || !message) {
-			return res.status(statusCodes.FORBIDDEN).json({
-                success : false,
-                message : "Message and User is required"
-            })
-		}
 
-        const chatMessage = new chat({
-			userId,
-			message,
-		});
 
-		await chatMessage.save();
-        return res.status(statusCodes.CREATED).json({
-            success : true,
-            message : "Chat send",
-            chatMessage
-        })
-    } catch (error) {
-        return res.sat
+//one to one chat retrieval through id
+export const getChat = async (req, res) => {
+  try {
+    console.log(req.body);
+    const { senderId, receiverId } = req.body;
+    const user = await chatSchema.find({
+      $or: [
+        { userId_Sender: senderId, userId_Receiver: receiverId },
+        { userId_Sender: receiverId, userId_Receiver: senderId },
+      ],
+    });
+    if (user) {
+      return res.status(statusCodes.OK).json({
+        success: true,
+        data: user,
+        message: "Chats Fetched Successfully",
+      });
     }
-}
+  } catch (error) {
+    res.status(statusCodes.INTERNAL_SERVER_ERROR).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};

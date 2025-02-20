@@ -13,6 +13,7 @@ import Home from "./pages/Home";
 import Admin from "./pages/Admin";
 import Error from "./pages/Error";
 import ProtectedRouteAdmin from "./middleware/ProtectedRouteAdmin";
+import Chat from './pages/Chat'
 
 function App() {
   return (
@@ -24,6 +25,7 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/modal" element={<ModalComponent />} />
         <Route path="*" element={<Error/>}/>
+        <Route path="/chat" element={<Chat/>} />
 
         <Route
           path="/admin"

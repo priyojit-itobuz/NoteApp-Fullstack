@@ -9,6 +9,7 @@ export const CreateContextProvider = (props) => {
   const [user, setUser] = useState(localStorage.getItem("userName") || '');
   const [Email, setEmail] = useState(localStorage.getItem("email") || '');
   const [uId,setuId] = useState('');
+  const [adminId,setAdminId] = useState('');
 
   const [profile,setProfile] = useState(localStorage.getItem("profilePic") || '');
   
@@ -42,7 +43,7 @@ export const CreateContextProvider = (props) => {
   };
 
   return (
-    <CreateContext.Provider value={{ isLoggedIn, setLoggedIn, LoggedIn, Logout, AccessToken, setAccessToken, RefreshToken, setRefreshToken, user, setUser,Email,setEmail,profile,setProfile,verified,isVerified,Role,setRole,nId,setnId,uId,setuId }}>
+    <CreateContext.Provider value={{ isLoggedIn, setLoggedIn, LoggedIn, Logout, AccessToken, setAccessToken, RefreshToken, setRefreshToken, user, setUser,Email,setEmail,profile,setProfile,verified,isVerified,Role,setRole,nId,setnId,uId,setuId,adminId,setAdminId}}>
       {props.children}
     </CreateContext.Provider>
   );

@@ -94,7 +94,7 @@ export const login = async (req, res) => {
     const currentUser = await user
       .findOne(
         { email: req.body.email },
-        { password: 1, email: 1, userName: 1, role: 1 }
+        { password: 1, email: 1, userName: 1, role: 1, _id:1 }
       )
       .exec();
     if (!currentUser) {
@@ -105,6 +105,7 @@ export const login = async (req, res) => {
     const userName = currentUser.userName;
     const email = currentUser.email;
     const role = currentUser.role;
+    const uid = currentUser._id;
     if (currentUser.isVerified === false) {
       return res.status(statusCodes.UNAUTHORIZED).json({
         success: false,
@@ -137,6 +138,7 @@ export const login = async (req, res) => {
       userName,
       role,
       email,
+      uid,
     });
   } catch (error) {
     res

@@ -60,3 +60,26 @@ export const deleteUser = async(req,res) => {
     
   }
 }
+
+export const getAllAdmins = async(req,res) => {
+  try {
+    const admins = await user.find({ role: "admin" });
+    if (admins) {
+      res.status(statusCodes.OK).json({
+        success: true,
+        message: "Admin fetched success",
+        data: admins,
+      });
+    } else {
+      res.status(statusCodes.NOT_FOUND).json({
+        success: false,
+        message: "Admin fetch fail",
+      });
+    }
+  } catch (error) {
+    return res.status(statusCodes.INTERNAL_SERVER_ERROR).json({
+      success : false,
+      message : error.message
+    })
+  }
+}

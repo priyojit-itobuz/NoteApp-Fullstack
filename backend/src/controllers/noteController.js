@@ -139,7 +139,6 @@ export const updateNote = async (req, res) => {
       });
     }
 
-    // If the title is changing, check for duplicates
     if (title && title !== searchNote.title) {
       const findTitle = await note.findOne({ userId, title });
       if (findTitle) {
@@ -151,8 +150,8 @@ export const updateNote = async (req, res) => {
     }
 
     // Update the note
-    searchNote.title = title || searchNote.title;  // Only update if title is provided
-    searchNote.content = content || searchNote.content;  // Only update if content is provided
+    searchNote.title = title || searchNote.title;  
+    searchNote.content = content || searchNote.content;  
 
     const updatedNote = await searchNote.save();
 

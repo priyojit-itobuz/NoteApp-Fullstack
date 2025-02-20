@@ -7,9 +7,29 @@ import axiosInstance from '../utils/axiosInstance';
 export default function Navbar() {
     const [navbar, setNavbar] = useState(false);
     const { isLoggedIn, Logout, AccessToken, user, setUser, setEmail, Role, setRole } = useContext(CreateContext);
+    const [admins,setAdmins] = useState([]);
 
     const [token, setToken] = useState(localStorage.getItem("accessToken") || '');
     const navigate = useNavigate();
+    const [isOpen, setIsOpen] = useState(false);
+
+    const toggleDropdown = async() => {
+        setIsOpen((prev) => !prev);
+        try{
+            const res = await axiosInstance.get("/admin/allAdmins", {},
+                {
+                })
+            if(res.data.success)
+            {
+                console.log(res.data.data);
+                setAdmins(res.data.data);
+            }
+        }
+        catch(error)
+        {
+            console.log(error);
+        }
+    };
 
     useEffect(() => {
         if (AccessToken) {
@@ -102,7 +122,7 @@ export default function Navbar() {
                                 <li className="text-white hover:text-indigo-200">
                                     <Link to="/" className="text-black">Home</Link>
                                 </li>
-                                {token  && (
+                                {token && (
                                     <li className="text-white hover:text-indigo-200">
                                         <Link to="/notes" className="text-black">My Notes</Link>
                                     </li>
@@ -119,6 +139,26 @@ export default function Navbar() {
                                         <li className="text-white hover:text-indigo-200">
                                             <Link to="/admin" className="text-black">Admin</Link>
                                         </li>
+                                    )
+                                    :
+                                    (<></>)
+                                )}
+                                {token && (Role !== 'admin' ?
+                                    (
+                                        <div className="relative inline-block">
+                                            <button
+                                                onClick={toggleDropdown}
+                                            >
+                                                Chat
+                                            </button>
+                                            {isOpen && (
+                                                <div className="absolute left-0 bg-white border border-gray-300 rounded shadow-lg mt-1">
+                                                    {admins?.map((admin,index) => {
+                                                        return <button key={index} className="block w-[200px] text-left py-2 px-4 hover:bg-gray-100">{admin.userName}</button>
+                                                    })}
+                                                </div>
+                                            )}
+                                        </div>
                                     )
                                     :
                                     (<></>)
@@ -147,7 +187,7 @@ export default function Navbar() {
                                         Hi, <span className='text-green-600 uppercase font-semibold'>{user}</span>
                                     </div>
                                     <button
-                                        className="inline-block w-full px-4 py-2 text-white text-center bg-gray-600 rounded-md shadow hover:bg-gray-800 w-[50%]"
+                                        className="inline-block w-full px-4 py-2 text-white text-center bg-gray-600 rounded-md shadow hover:bg-gray-800 "
                                         onClick={handleLogout}
                                     >
                                         Logout

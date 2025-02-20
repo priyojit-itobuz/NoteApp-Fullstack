@@ -1,65 +1,53 @@
-import React, { useState, useEffect } from "react";
+
+
+import React, { useContext, useState, useEffect } from 'react';
 import io from "socket.io-client";
-import axios from "axios";
+import ChatRoom from '../components/ChatRoom';
+import { CreateContext } from '../context/myContext';
 
 const socket = io("http://localhost:3000"); // Change to your backend URL
 
-const Chat = ({ userId, receiverId }) => {
-  const [message, setMessage] = useState("");
-  const [messages, setMessages] = useState([]);
+export default function Chat() {
+  const [username, setUsername] = useState("");
+  const [room, setRoom] = useState("");
+  const [showChat, setShowChat] = useState(false);
+  const { uId, adminId, Role } = useContext(CreateContext);
 
   useEffect(() => {
-    socket.emit("userConnected", userId);
+    const initialRoomValue = Role === 'user' ? adminId : uId;
+    setRoom(initialRoomValue);
+  }, [adminId, uId, Role]);
 
-    socket.on("receiveMessage", (newMessage) => {
-      setMessages((prev) => [...prev, newMessage]);
-    });
-
-    return () => {
-      socket.disconnect();
-    };
-  }, [userId]);
-
-  // 🔹 Fetch previous messages on first load
-  useEffect(() => {
-    const fetchMessages = async () => {
-      try {
-        const res = await axios.get(`http://localhost:3000/api/messages/${userId}/${receiverId}`);
-        setMessages(res.data);
-      } catch (error) {
-        console.error("Error fetching messages:", error);
-      }
-    };
-
-    fetchMessages();
-  }, [userId, receiverId]);
-
-  const sendMessage = () => {
-    if (message.trim() === "") return;
-    socket.emit("sendMessage", { sender: userId, receiver: receiverId, message });
-    setMessages([...messages, { sender: userId, message }]);
-    setMessage("");
+  const joinRoom = () => {
+    if (username !== "" && room !== "") {
+      socket.emit("join_room", room);
+      setShowChat(true);
+    }
   };
 
   return (
     <div>
-      <h2>Chat</h2>
-      <div style={{ height: "300px", overflowY: "auto", border: "1px solid gray", padding: "10px" }}>
-        {messages.map((msg, index) => (
-          <p key={index} style={{ textAlign: msg.sender === userId ? "right" : "left" }}>
-            {msg.message}
-          </p>
-        ))}
-      </div>
-      <input
-        type="text"
-        value={message}
-        onChange={(e) => setMessage(e.target.value)}
-        placeholder="Type a message..."
-      />
-      <button onClick={sendMessage}>Send</button>
+      {!showChat ? (
+        <div className="joinChatContainer">
+          <h3>Join A Chat</h3>
+          <input
+            type="text"
+            placeholder="John..."
+            onChange={(event) => {
+              setUsername(event.target.value);
+            }}
+          />
+          <input
+            type="text"
+            placeholder="Room ID..."
+            value={room} // Use value instead of defaultValue
+            readOnly // Make it read-only if you don't want users to change it
+          />
+          <button onClick={joinRoom}>Join A Room</button>
+        </div>
+      ) : (
+        <ChatRoom socket={socket} username={username} room={room} />
+      )}
     </div>
   );
-};
-
-export default Chat;
+}

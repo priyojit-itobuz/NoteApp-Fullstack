@@ -15,7 +15,7 @@ export default function Login() {
         resolver: yupResolver(loginUser),
     });
     const navigate = useNavigate();
-    const { setAccessToken, setRefreshToken, setUser, setEmail, LoggedIn, Role, setRole } = useContext(CreateContext);
+    const { setAccessToken, setRefreshToken, setUser, setEmail, LoggedIn, Role, setRole ,adminId,setAdminId} = useContext(CreateContext);
     const [seePassword, seeSetPassword] = useState(false)
 
     const handleSignin = async (data) => {
@@ -25,7 +25,9 @@ export default function Login() {
             })
             
             if (res.data.success) {
-                const { accessToken, refreshToken, userName, email, role } = res.data;
+                const { accessToken, refreshToken, userName, email, role ,uid} = res.data;
+                console.log("my id",uid);
+                setAdminId(uid);
                 localStorage.setItem("accessToken", accessToken);
                 localStorage.setItem("refreshToken", refreshToken);
                 localStorage.setItem("userName", userName);
