@@ -2,6 +2,42 @@ import user from "../models/userModel.js";
 import chatSchema from "../models/chatModel.js";
 import statusCodes from "../config/constants.js";
 
+// export const sendChat = (io) => async (req, res) => {
+//   try {
+//       const { senderId, receiverId, message } = req.body;
+//       const sender = await user.findById(senderId);
+//       const receiver = await user.findById(receiverId);
+//       const data = await chatSchema.create({
+//           Sender: sender.userName,
+//           Receiver: receiver.userName,
+//           message: message,
+//           userId_Sender: senderId,
+//           userId_Receiver: receiverId,
+//       });
+//       if (data) {
+//           // Emit the message to the receiver
+//           io.to(receiverId).emit("receiveMessage", {
+//               senderId,
+//               receiverId,
+//               message,
+//           });
+//           return res.status(statusCodes.CREATED).json({
+//               success: true,
+//               message: "Message stored successfully",
+//               data: data,
+//           });
+//       }
+//   } catch (error) {
+//       return res.status(statusCodes.INTERNAL_SERVER_ERROR).json({
+//           success: false,
+//           message: error,
+//       });
+//   }
+// };
+
+
+
+
 // one to one-chat posting (through id)
 export const sendChat = async (req, res) => {
   try {
@@ -30,9 +66,6 @@ export const sendChat = async (req, res) => {
   }
 };
 
-
-
-//one to one chat retrieval through id
 export const getChat = async (req, res) => {
   try {
     console.log(req.body);
@@ -57,3 +90,4 @@ export const getChat = async (req, res) => {
     });
   }
 };
+

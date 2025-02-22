@@ -7,10 +7,9 @@ import adminRoute from './src/routes/adminRoute.js';
 import routeChat from './src/routes/chatRoute.js' 
 import fs from "fs";
 import cors from "cors";
-import Message from "./src/models/chatModel.js"; // Adjusted path
 import { Server } from 'socket.io';
 import http from 'http';
-import { isLoggedIn } from "./src/middlewares/loginStatus.js";
+
 
 const corsOptions = {
     origin: '*', 
@@ -45,58 +44,29 @@ const io = new Server(server, {
     },
 });
 
-app.use("/chat",routeChat(io));
 
-//Websocket Connection
+// WebSocket Connection
 io.on("connection", (socket) => {
-  console.log(`User Connected: ${socket.id}`);
+  console.log(`User  Connected: ${socket.id}`);
 
-  socket.on("join_room", (data) => {
-    socket.join(data);
-    console.log(`User with ID: ${socket.id} joined room: ${data}`);
+  socket.on("join_room", (room) => {
+      socket.join(room);
+      console.log(`User  with ID: ${socket.id} joined room: ${room}`);
   });
 
   socket.on("send_message", (data) => {
-    console.log("Received msg",data);
-    io.to(data.receiverId).emit("receiveMessage",data)
-    // socket.to(data.room).emit("receive_message", data);
+      console.log("Received msg", data);
+      io.to(data.receiverId).emit("receiveMessage", data);
   });
 
   socket.on("disconnect", () => {
-    console.log("User Disconnected", socket.id);
+      console.log("User  Disconnected", socket.id);
   });
 });
 
+// Pass io to the chat routes
+app.use("/chat", routeChat(io));
 
-// WebSocket Connection
-// io.on("connection", (socket) => {
-//   console.log(`User  Connected: ${socket.id}`);
-
-//   socket.on("join_room", (data) => {
-//     socket.join(data);
-//     console.log(`User  with ID: ${socket.id} joined room: ${data}`);
-//   });
-
-//   socket.on("send_message", async (data) => {
-//     // Save the message to the database
-//     const newMessage = new Message({
-//       sender: data.sender, // Assuming you send senderId with the message
-//       receiver: data.receiver, // Assuming you send receiverId with the message
-//       message: data.message,
-//     });
-
-//     try {
-//       await newMessage.save();
-//       socket.to(data.room).emit("receive_message", data);
-//     } catch (error) {
-//       console.error("Error saving message:", error);
-//     }
-//   });
-
-//   socket.on("disconnect", () => {
-//     console.log("User  Disconnected", socket.id);
-//   });
-// });
 
 
 
